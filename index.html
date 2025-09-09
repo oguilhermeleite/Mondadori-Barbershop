@@ -546,33 +546,52 @@
             font-size: 0.9rem;
         }
 
-        /* Admin Access Button */
+        /* Admin Access Button - Enhanced */
         .admin-access {
             position: fixed;
             bottom: 100px;
             right: 30px;
-            background: rgba(255, 215, 0, 0.1);
-            border: 2px solid var(--primary-gold);
-            color: var(--primary-gold);
+            background: linear-gradient(45deg, var(--primary-gold), var(--accent-orange));
+            border: 3px solid var(--primary-gold);
+            color: var(--black);
             padding: 0.8rem;
             border-radius: 50%;
-            width: 50px;
-            height: 50px;
+            width: 55px;
+            height: 55px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 1.2rem;
+            font-size: 1.3rem;
             cursor: pointer;
             transition: var(--transition);
             z-index: 999;
-            opacity: 0.7;
+            box-shadow: 0 4px 15px rgba(255, 215, 0, 0.4);
+            animation: adminPulse 3s infinite;
         }
 
         .admin-access:hover {
-            background: var(--primary-gold);
+            background: linear-gradient(45deg, var(--accent-orange), var(--primary-gold));
             color: var(--black);
-            opacity: 1;
-            transform: scale(1.1);
+            transform: scale(1.15);
+            box-shadow: 0 6px 25px rgba(255, 215, 0, 0.6);
+            animation: none;
+        }
+
+        .admin-access:active {
+            transform: scale(1.05);
+            box-shadow: 0 2px 10px rgba(255, 215, 0, 0.8);
+        }
+
+        @keyframes adminPulse {
+            0% {
+                box-shadow: 0 4px 15px rgba(255, 215, 0, 0.4);
+            }
+            50% {
+                box-shadow: 0 4px 20px rgba(255, 215, 0, 0.6);
+            }
+            100% {
+                box-shadow: 0 4px 15px rgba(255, 215, 0, 0.4);
+            }
         }
 
         /* Admin Login Modal */
@@ -1577,7 +1596,7 @@
     </a>
 
     <!-- Admin Access Button -->
-    <div class="admin-access" id="admin-access" title="Área do Barbeiro">
+    <div class="admin-access" id="admin-access-btn" title="Área do Barbeiro" onclick="openAdminLogin()">
         <i class="fas fa-lock"></i>
     </div>
 
@@ -1913,9 +1932,24 @@ Aguardo confirmação do agendamento! 💈`;
         // Click outside modal to close
         document.addEventListener('click', function(e) {
             if (e.target === document.getElementById('admin-login-modal')) {
-                hideLoginModal();
+                closeAdminLogin();
             }
         });
+
+        // Test admin button functionality
+        function testAdminButton() {
+            console.log('Testing admin button...');
+            const btn = document.getElementById('admin-access-btn');
+            if (btn) {
+                console.log('Admin button found:', btn);
+                console.log('Button onclick:', btn.onclick);
+            } else {
+                console.error('Admin button not found!');
+            }
+        }
+
+        // Add test to DOM ready
+        setTimeout(testAdminButton, 1000);
             });
         }
 
@@ -1971,36 +2005,67 @@ Aguardo confirmação do agendamento! 💈`;
                 localStorage.setItem('mondadori_appointments', JSON.stringify([]));
             }
 
-            // Setup admin access button
-            document.getElementById('admin-access').addEventListener('click', showLoginModal);
-            document.getElementById('login-close').addEventListener('click', hideLoginModal);
-            document.getElementById('admin-login-form').addEventListener('submit', handleAdminLogin);
-            document.getElementById('logout-btn').addEventListener('click', handleLogout);
+            // Setup admin modal event listeners
+            const loginCloseBtn = document.getElementById('login-close');
+            const adminLoginForm = document.getElementById('admin-login-form');
+            const logoutBtn = document.getElementById('logout-btn');
+            
+            if (loginCloseBtn) loginCloseBtn.addEventListener('click', closeAdminLogin);
+            if (adminLoginForm) adminLoginForm.addEventListener('submit', handleAdminLogin);
+            if (logoutBtn) logoutBtn.addEventListener('click', handleLogout);
             
             // Update current date
             updateCurrentDate();
         }
 
-        function showLoginModal() {
-            document.getElementById('admin-login-modal').classList.add('active');
+        // Fixed Admin Login Functions
+        function openAdminLogin() {
+            console.log('Admin login button clicked');
+            const modal = document.getElementById('admin-login-modal');
+            if (modal) {
+                modal.classList.add('active');
+                // Focus on username field
+                setTimeout(() => {
+                    const usernameField = document.getElementById('admin-username');
+                    if (usernameField) {
+                        usernameField.focus();
+                    }
+                }, 100);
+            } else {
+                console.error('Login modal not found');
+            }
         }
 
-        function hideLoginModal() {
-            document.getElementById('admin-login-modal').classList.remove('active');
-            document.getElementById('admin-login-form').reset();
+        function closeAdminLogin() {
+            const modal = document.getElementById('admin-login-modal');
+            if (modal) {
+                modal.classList.remove('active');
+                // Reset form
+                const form = document.getElementById('admin-login-form');
+                if (form) {
+                    form.reset();
+                }
+            }
         }
 
-        function handleAdminLogin(e) {
-            e.preventDefault();
+        function handleAdminLogin(event) {
+            event.preventDefault();
             
-            const username = document.getElementById('admin-username').value;
-            const password = document.getElementById('admin-password').value;
+            const username = document.getElementById('admin-username').value.trim();
+            const password = document.getElementById('admin-password').value.trim();
+            
+            console.log('Login attempt:', username);
             
             if (authenticateUser(username, password)) {
-                hideLoginModal();
+                console.log('Login successful');
+                closeAdminLogin();
                 showDashboard();
             } else {
-                showMessage('Credenciais inválidas!', 'error');
+                console.log('Login failed');
+                showMessage('❌ Credenciais incorretas! Use diego/mondadori2025', 'error');
+                // Clear password field but keep username
+                document.getElementById('admin-password').value = '';
+                document.getElementById('admin-password').focus();
             }
         }
 
@@ -2017,7 +2082,8 @@ Aguardo confirmação do agendamento! 💈`;
             document.querySelector('.booking').style.display = 'none';
             document.querySelector('.footer').style.display = 'none';
             document.querySelector('.whatsapp-float').style.display = 'none';
-            document.querySelector('.admin-access').style.display = 'none';
+            const adminBtn = document.getElementById('admin-access-btn');
+            if (adminBtn) adminBtn.style.display = 'none';
             
             // Show dashboard
             document.getElementById('admin-dashboard').classList.add('active');
@@ -2034,7 +2100,8 @@ Aguardo confirmação do agendamento! 💈`;
             document.querySelector('.booking').style.display = 'block';
             document.querySelector('.footer').style.display = 'block';
             document.querySelector('.whatsapp-float').style.display = 'flex';
-            document.querySelector('.admin-access').style.display = 'flex';
+            const adminBtn = document.getElementById('admin-access-btn');
+            if (adminBtn) adminBtn.style.display = 'flex';
             
             // Hide dashboard
             document.getElementById('admin-dashboard').classList.remove('active');
@@ -2351,13 +2418,19 @@ Aguardo confirmação do agendamento! 💈`;
 
         function showMessage(message, type) {
             const messageEl = document.getElementById('success-message');
-            messageEl.textContent = message;
-            messageEl.style.background = type === 'success' ? '#32CD32' : '#DC143C';
-            messageEl.classList.add('active');
-            
-            setTimeout(() => {
-                messageEl.classList.remove('active');
-            }, 3000);
+            if (messageEl) {
+                messageEl.textContent = message;
+                messageEl.style.background = type === 'success' ? '#32CD32' : '#DC143C';
+                messageEl.style.color = type === 'success' ? '#000' : '#fff';
+                messageEl.classList.add('active');
+                
+                setTimeout(() => {
+                    messageEl.classList.remove('active');
+                }, 4000);
+            } else {
+                // Fallback to alert if message element doesn't exist
+                alert(message);
+            }
         }
 
         function generateUniqueId() {
