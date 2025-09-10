@@ -1595,10 +1595,407 @@
         <i class="fab fa-whatsapp"></i>
     </a>
 
-    <!-- Admin Access Button -->
-    <div class="admin-access" id="admin-access-btn" title="Área do Barbeiro" onclick="openAdminLogin()">
-        <i class="fas fa-lock"></i>
-    </div>
+    <!-- Admin Access Button - Fixed Version -->
+    <button id="adminBtn" style="
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        width: 50px;
+        height: 50px;
+        background: linear-gradient(45deg, #FFD700, #FFA500);
+        border: none;
+        border-radius: 50%;
+        cursor: pointer;
+        z-index: 1000;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 4px 15px rgba(255, 215, 0, 0.3);
+        transition: all 0.3s ease;
+    " onclick="openAdminModal()">
+        <i class="fas fa-lock" style="color: #000; font-size: 1.2rem;"></i>
+    </button>
+
+    <script>
+    // Force attach click event to admin button
+    document.addEventListener('DOMContentLoaded', function() {
+        // Wait a moment for page to fully load
+        setTimeout(function() {
+            const adminBtn = document.getElementById('adminBtn');
+            if (adminBtn) {
+                adminBtn.addEventListener('click', openAdminModal);
+                console.log('Admin button event attached successfully');
+            }
+            
+            // Also try to find any existing admin button
+            const lockIcon = document.querySelector('.fa-lock');
+            if (lockIcon && lockIcon.parentElement) {
+                lockIcon.parentElement.addEventListener('click', openAdminModal);
+            }
+        }, 1000);
+    });
+
+    // Simple, reliable admin modal function
+    function openAdminModal() {
+        console.log('Admin button clicked!');
+        
+        // Remove any existing modal
+        const existingModal = document.getElementById('adminModal');
+        if (existingModal) {
+            existingModal.remove();
+        }
+        
+        // Create modal HTML
+        const modalHTML = `
+            <div id="adminModal" style="
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: rgba(0,0,0,0.9);
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                z-index: 9999;
+            ">
+                <div style="
+                    background: #1a1a1a;
+                    padding: 2rem;
+                    border-radius: 15px;
+                    border: 2px solid #FFD700;
+                    text-align: center;
+                    color: white;
+                    max-width: 400px;
+                    width: 90%;
+                ">
+                    <h2 style="color: #FFD700; margin-bottom: 1rem;">🔐 ÁREA RESTRITA</h2>
+                    <h3 style="margin-bottom: 1.5rem;">MONDADORI BARBERSHOP</h3>
+                    
+                    <input type="text" id="adminUser" placeholder="👤 Usuário" style="
+                        width: 100%;
+                        padding: 1rem;
+                        margin: 0.5rem 0;
+                        border: 1px solid #333;
+                        border-radius: 5px;
+                        background: #2a2a2a;
+                        color: white;
+                        font-size: 1rem;
+                        box-sizing: border-box;
+                    ">
+                    
+                    <input type="password" id="adminPass" placeholder="🔑 Senha" style="
+                        width: 100%;
+                        padding: 1rem;
+                        margin: 0.5rem 0;
+                        border: 1px solid #333;
+                        border-radius: 5px;
+                        background: #2a2a2a;
+                        color: white;
+                        font-size: 1rem;
+                        box-sizing: border-box;
+                    ">
+                    
+                    <button onclick="attemptLogin()" style="
+                        width: 100%;
+                        padding: 1rem;
+                        background: linear-gradient(45deg, #FFD700, #FFA500);
+                        border: none;
+                        border-radius: 5px;
+                        color: #000;
+                        font-weight: bold;
+                        font-size: 1rem;
+                        cursor: pointer;
+                        margin-top: 1rem;
+                    ">ENTRAR 🚀</button>
+                    
+                    <button onclick="closeAdminModal()" style="
+                        width: 100%;
+                        padding: 0.5rem;
+                        background: #666;
+                        border: none;
+                        border-radius: 5px;
+                        color: white;
+                        margin-top: 0.5rem;
+                        cursor: pointer;
+                    ">Fechar</button>
+                    
+                    <p style="margin-top: 1rem; font-size: 0.9rem; color: #ccc;">
+                        Acesso apenas autorizado
+                    </p>
+                </div>
+            </div>
+        `;
+        
+        // Add modal to page
+        document.body.insertAdjacentHTML('beforeend', modalHTML);
+        
+        // Focus on username field
+        setTimeout(() => {
+            document.getElementById('adminUser').focus();
+        }, 100);
+    }
+
+    function closeAdminModal() {
+        const modal = document.getElementById('adminModal');
+        if (modal) {
+            modal.remove();
+        }
+    }
+
+    function attemptLogin() {
+        const username = document.getElementById('adminUser').value;
+        const password = document.getElementById('adminPass').value;
+        
+        console.log('Login attempt:', username); // Debug
+        
+        if (username === 'diego' && password === 'mondadori2025') {
+            closeAdminModal();
+            openDashboard();
+        } else {
+            alert('❌ Credenciais incorretas. Use: diego / mondadori2025');
+        }
+    }
+
+    function openDashboard() {
+        console.log('Opening dashboard...');
+        
+        // Hide main website content
+        document.querySelector('body').style.overflow = 'hidden';
+        const mainContent = document.querySelector('main') || document.querySelector('.hero');
+        if (mainContent) {
+            mainContent.style.display = 'none';
+        }
+        
+        // Create dashboard
+        const dashboardHTML = `
+            <div id="adminDashboard" style="
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100vh;
+                background: #0f0f0f;
+                color: white;
+                z-index: 5000;
+                overflow-y: auto;
+                font-family: 'Segoe UI', sans-serif;
+            ">
+                <!-- Header -->
+                <div style="
+                    background: linear-gradient(135deg, #1a1a1a 0%, #000 100%);
+                    padding: 1rem 2rem;
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: center;
+                    border-bottom: 2px solid #FFD700;
+                    flex-wrap: wrap;
+                ">
+                    <h1 style="margin: 0; color: #FFD700; font-size: 1.5rem;">
+                        💈 DASHBOARD MONDADORI
+                    </h1>
+                    <div style="color: #ccc; font-size: 0.9rem;">
+                        ${new Date().toLocaleDateString('pt-BR', { 
+                            weekday: 'long', 
+                            day: 'numeric',
+                            month: 'long',
+                            year: 'numeric'
+                        })}
+                    </div>
+                    <button onclick="closeDashboard()" style="
+                        background: #dc3545;
+                        color: white;
+                        border: none;
+                        padding: 0.5rem 1rem;
+                        border-radius: 5px;
+                        cursor: pointer;
+                        font-size: 0.9rem;
+                    ">
+                        Sair
+                    </button>
+                </div>
+                
+                <!-- Stats Cards -->
+                <div style="
+                    display: grid;
+                    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+                    gap: 1rem;
+                    padding: 2rem;
+                ">
+                    <div style="
+                        background: linear-gradient(145deg, #2a2a2a, #1a1a1a);
+                        padding: 1.5rem;
+                        border-radius: 10px;
+                        border: 1px solid #FFD700;
+                        text-align: center;
+                    ">
+                        <h3 style="color: #FFD700; margin-bottom: 0.5rem;">💰 Faturamento Hoje</h3>
+                        <span style="font-size: 1.5rem; font-weight: bold;">R$ 0,00</span>
+                    </div>
+                    
+                    <div style="
+                        background: linear-gradient(145deg, #2a2a2a, #1a1a1a);
+                        padding: 1.5rem;
+                        border-radius: 10px;
+                        border: 1px solid #FFD700;
+                        text-align: center;
+                    ">
+                        <h3 style="color: #FFD700; margin-bottom: 0.5rem;">👥 Clientes Hoje</h3>
+                        <span style="font-size: 1.5rem; font-weight: bold;">0</span>
+                    </div>
+                    
+                    <div style="
+                        background: linear-gradient(145deg, #2a2a2a, #1a1a1a);
+                        padding: 1.5rem;
+                        border-radius: 10px;
+                        border: 1px solid #FFD700;
+                        text-align: center;
+                    ">
+                        <h3 style="color: #FFD700; margin-bottom: 0.5rem;">⏰ Próximo Cliente</h3>
+                        <span style="font-size: 1rem;">Nenhum agendamento</span>
+                    </div>
+                    
+                    <div style="
+                        background: linear-gradient(145deg, #2a2a2a, #1a1a1a);
+                        padding: 1.5rem;
+                        border-radius: 10px;
+                        border: 1px solid #FFD700;
+                        text-align: center;
+                    ">
+                        <h3 style="color: #FFD700; margin-bottom: 0.5rem;">📈 Taxa Confirmação</h3>
+                        <span style="font-size: 1.5rem; font-weight: bold;">100%</span>
+                    </div>
+                </div>
+                
+                <!-- Appointments Section -->
+                <div style="padding: 0 2rem 2rem;">
+                    <h2 style="color: #FFD700; margin-bottom: 1rem;">📅 AGENDAMENTOS DE HOJE</h2>
+                    <div id="appointmentsList" style="
+                        background: linear-gradient(145deg, #2a2a2a, #1a1a1a);
+                        border: 1px solid #333;
+                        border-radius: 10px;
+                        padding: 2rem;
+                        text-align: center;
+                    ">
+                        <p style="color: #ccc; margin: 0;">
+                            Nenhum agendamento encontrado para hoje.<br>
+                            Os agendamentos feitos pelo site aparecerão aqui automaticamente.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        `;
+        
+        document.body.insertAdjacentHTML('beforeend', dashboardHTML);
+        
+        // Load any existing appointments
+        loadAppointments();
+    }
+
+    function closeDashboard() {
+        const dashboard = document.getElementById('adminDashboard');
+        if (dashboard) {
+            dashboard.remove();
+        }
+        
+        // Show main content again
+        document.querySelector('body').style.overflow = 'auto';
+        const mainContent = document.querySelector('main') || document.querySelector('.hero');
+        if (mainContent) {
+            mainContent.style.display = 'block';
+        }
+    }
+
+    function loadAppointments() {
+        // Load appointments from localStorage
+        const appointments = JSON.parse(localStorage.getItem('barbershopAppointments') || '[]');
+        const today = new Date().toISOString().split('T')[0];
+        const todayAppointments = appointments.filter(apt => apt.date === today);
+        
+        const appointmentsList = document.getElementById('appointmentsList');
+        if (todayAppointments.length === 0) {
+            appointmentsList.innerHTML = `
+                <p style="color: #ccc; margin: 0;">
+                    Nenhum agendamento encontrado para hoje.<br>
+                    Os agendamentos feitos pelo site aparecerão aqui automaticamente.
+                    <br><br>
+                    <small>Para testar: faça um agendamento pelo formulário do site</small>
+                </p>
+            `;
+        } else {
+            appointmentsList.innerHTML = todayAppointments.map(apt => `
+                <div style="
+                    background: linear-gradient(145deg, #1a1a1a, #2a2a2a);
+                    border: 1px solid #FFD700;
+                    border-radius: 10px;
+                    padding: 1rem;
+                    margin-bottom: 1rem;
+                    text-align: left;
+                ">
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <div>
+                            <h3 style="color: #FFD700; margin: 0;">${apt.time} - ${apt.customerName}</h3>
+                            <p style="margin: 0.5rem 0;">✂️ ${apt.service}</p>
+                            <p style="margin: 0.5rem 0;">📱 ${apt.phone}</p>
+                            ${apt.notes ? `<p style="margin: 0.5rem 0;">📝 "${apt.notes}"</p>` : ''}
+                        </div>
+                        <div>
+                            <button onclick="sendWhatsApp('${apt.phone}', '${apt.customerName}', '${apt.service}', '${apt.time}')" style="
+                                background: #25d366;
+                                color: white;
+                                border: none;
+                                padding: 0.5rem 1rem;
+                                border-radius: 5px;
+                                cursor: pointer;
+                                margin: 0.25rem;
+                            ">📱 WhatsApp</button>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+    }
+
+    function sendWhatsApp(phone, name, service, time) {
+        const message = `Oi ${name}! 👋\n\nVocê tem agendamento hoje às ${time} na Mondadori Barbershop:\n✂️ Serviço: ${service}\n📍 Rua Marechal Hermes, 2055\n\nConfirma sua presença? 🤔\n\n✅ SIM - Estarei lá!\n❌ NÃO - Preciso reagendar`;
+        const whatsappUrl = `https://wa.me/55${phone.replace(/\D/g, '')}?text=${encodeURIComponent(message)}`;
+        window.open(whatsappUrl, '_blank');
+    }
+
+    // Enhanced booking form integration
+    document.addEventListener('DOMContentLoaded', function() {
+        const bookingForm = document.getElementById('booking-form');
+        if (bookingForm) {
+            bookingForm.addEventListener('submit', function(e) {
+                // Let the existing WhatsApp functionality work
+                setTimeout(() => {
+                    const formData = new FormData(this);
+                    const appointmentData = {
+                        id: Date.now().toString(),
+                        customerName: formData.get('name'),
+                        phone: formData.get('phone'),
+                        email: formData.get('email') || '',
+                        service: formData.get('service'),
+                        date: formData.get('date'),
+                        time: formData.get('time'),
+                        notes: formData.get('observations') || '',
+                        status: 'novo',
+                        timestamp: new Date().toISOString()
+                    };
+                    
+                    // Save to localStorage
+                    const appointments = JSON.parse(localStorage.getItem('barbershopAppointments') || '[]');
+                    appointments.push(appointmentData);
+                    localStorage.setItem('barbershopAppointments', JSON.stringify(appointments));
+                    
+                    console.log('Appointment saved to dashboard:', appointmentData);
+                }, 100);
+            });
+        }
+    });
+
+    console.log('Admin script loaded successfully');
+    </script>
 
     <!-- Admin Login Modal -->
     <div class="admin-login-modal" id="admin-login-modal">
