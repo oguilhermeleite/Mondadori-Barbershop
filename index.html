@@ -1515,7 +1515,7 @@
             
             <script>
             function submitBooking() {
-                console.log('Submit booking clicked - direct approach');
+                console.log('=== SUBMIT BOOKING STARTED ===');
                 
                 // Get form data
                 const name = document.getElementById('name').value.trim();
@@ -1527,11 +1527,11 @@
                 const barber = document.getElementById('barber').value || 'Diego';
                 const observations = document.getElementById('observations').value.trim();
                 
-                console.log('Form data collected:', { name, phone, service, date, time });
+                console.log('Form data collected:', {name, phone, service, date, time});
                 
                 // Validate required fields
                 if (!name || !phone || !service || !date || !time) {
-                    alert('❌ Por favor, preencha todos os campos obrigatórios:\n\n• Nome completo\n• WhatsApp\n• Serviço\n• Data\n• Horário');
+                    alert('Por favor, preencha todos os campos obrigatórios (Nome, WhatsApp, Serviço, Data e Horário).');
                     return;
                 }
                 
@@ -1546,37 +1546,69 @@
                 // Format date for display
                 const dateFormatted = selectedDate.toLocaleDateString('pt-BR');
                 
-                // Create appointment data for dashboard
+                // Create appointment data
                 const appointmentData = {
                     id: Date.now().toString(),
                     customerName: name,
                     phone: phone,
                     email: email || '',
                     service: service,
-                    date: date,
+                    date: date, // Keep original format YYYY-MM-DD for filtering
                     time: time,
                     barber: barber,
                     notes: observations || '',
                     status: 'novo',
-                    timestamp: new Date().toISOString()
+                    timestamp: new Date().toISOString(),
+                    dateFormatted: dateFormatted
                 };
                 
-                // Save to dashboard localStorage
+                console.log('Appointment data created:', appointmentData);
+                
+                // Save to dashboard with enhanced error handling
                 try {
-                    const appointments = JSON.parse(localStorage.getItem('barbershopAppointments') || '[]');
+                    // Check if localStorage is available
+                    if (typeof(Storage) === "undefined") {
+                        console.error('localStorage not supported');
+                        alert('Erro: Navegador não suporta armazenamento local');
+                        return;
+                    }
+                    
+                    // Get existing appointments
+                    let appointments = [];
+                    try {
+                        const stored = localStorage.getItem('barbershopAppointments');
+                        appointments = stored ? JSON.parse(stored) : [];
+                        console.log('Existing appointments:', appointments.length);
+                    } catch (parseError) {
+                        console.error('Error parsing existing appointments:', parseError);
+                        appointments = [];
+                    }
+                    
+                    // Add new appointment
                     appointments.push(appointmentData);
+                    
+                    // Save back to localStorage
                     localStorage.setItem('barbershopAppointments', JSON.stringify(appointments));
-                    console.log('Appointment saved to dashboard:', appointmentData);
+                    
+                    // Verify it was saved
+                    const verification = localStorage.getItem('barbershopAppointments');
+                    const parsedVerification = JSON.parse(verification);
+                    console.log('Appointment saved successfully. Total appointments:', parsedVerification.length);
+                    console.log('Last appointment:', parsedVerification[parsedVerification.length - 1]);
+                    
                 } catch (error) {
-                    console.error('Error saving appointment:', error);
+                    console.error('Error saving appointment to localStorage:', error);
+                    alert('Erro ao salvar agendamento. Contate o suporte.');
+                    return;
                 }
                 
-                // Create formatted WhatsApp message
+                // Create WhatsApp message
                 const message = `🔸 *NOVO AGENDAMENTO - MONDADORI BARBERSHOP* 🔸
 
 📋 *Dados do Cliente:*
 • Nome: ${name}
-• WhatsApp: ${phone}${email ? `\n• Email: ${email}` : ''}
+• WhatsApp: ${phone}
+${email ? `• Email: ${email}` : ''}
 
 💼 *Serviço Solicitado:*
 • ${service}
@@ -1588,35 +1620,27 @@
 
 ${observations ? `📝 *Observações:*\n${observations}\n\n` : ''}Aguardo confirmação do agendamento! 💈`;
                 
-                // Diego's WhatsApp number (Brazil country code + number)
+                // Diego's WhatsApp number
                 const diegoWhatsApp = '5541984325356';
                 
                 // Create WhatsApp URL
                 const whatsappUrl = `https://wa.me/${diegoWhatsApp}?text=${encodeURIComponent(message)}`;
                 
-                console.log('WhatsApp URL created:', whatsappUrl);
+                console.log('Opening WhatsApp:', whatsappUrl);
                 
-                // Open WhatsApp in new tab
-                const opened = window.open(whatsappUrl, '_blank');
+                // Open WhatsApp
+                window.open(whatsappUrl, '_blank');
                 
-                if (opened) {
-                    console.log('WhatsApp opened successfully');
-                    
-                    // Show success modal
-                    showBookingSuccessModal();
-                    
-                    // Reset form after short delay
-                    setTimeout(() => {
-                        const form = document.getElementById('booking-form');
-                        if (form) {
-                            form.reset();
-                            console.log('Form reset completed');
-                        }
-                    }, 2000);
-                } else {
-                    console.error('Failed to open WhatsApp');
-                    alert('⚠️ Não foi possível abrir o WhatsApp automaticamente.\n\nEntre em contato diretamente:\n📱 (41) 98432-5356');
+                // Show success message with debug info
+                alert(`✅ Agendamento enviado via WhatsApp!\n\nDados salvos: ID ${appointmentData.id}\nAguarde confirmação do Diego.`);
+                
+                // Reset form
+                const form = document.getElementById('booking-form');
+                if (form) {
+                    form.reset();
                 }
+                
+                console.log('=== SUBMIT BOOKING COMPLETED ===');
             }
             
             function showBookingSuccessModal() {
@@ -2127,139 +2151,220 @@ ${observations ? `📝 *Observações:*\n${observations}\n\n` : ''}Aguardo confi
     }
 
     function loadAppointments() {
-        // Load appointments from localStorage
-        const appointments = JSON.parse(localStorage.getItem('barbershopAppointments') || '[]');
-        const today = new Date().toISOString().split('T')[0];
-        const todayAppointments = appointments.filter(apt => apt.date === today);
+        console.log('=== LOADING APPOINTMENTS ===');
         
-        const appointmentsList = document.getElementById('appointmentsList');
-        if (!appointmentsList) return;
-        
-        if (todayAppointments.length === 0) {
-            appointmentsList.innerHTML = `
-                <div style="
-                    background: linear-gradient(145deg, #2a2a2a, #1a1a1a);
-                    border: 1px solid #333;
-                    border-radius: 10px;
-                    padding: 2rem;
-                    text-align: center;
-                    color: #ccc;
-                ">
-                    <div style="font-size: 3rem; opacity: 0.5; margin-bottom: 1rem;">📅</div>
-                    <p style="margin: 0; font-size: 1.1rem;">
-                        Nenhum agendamento encontrado para hoje.<br>
-                        Os agendamentos feitos pelo site aparecerão aqui automaticamente.
-                    </p>
-                    <p style="margin-top: 1rem; font-size: 0.9rem; opacity: 0.7;">
-                        Para testar: faça um agendamento pelo formulário do site
-                    </p>
-                </div>
-            `;
-        } else {
-            appointmentsList.innerHTML = todayAppointments.map(apt => `
-                <div class="appointment-card" style="
-                    background: linear-gradient(145deg, #1a1a1a, #2a2a2a);
-                    border: 2px solid #FFD700;
-                    border-radius: 15px;
-                    padding: 1.5rem;
-                    margin-bottom: 1.5rem;
-                    transition: all 0.3s ease;
-                ">
-                    <div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 1rem;">
-                        <div style="flex: 1; min-width: 250px;">
-                            <div style="display: flex; align-items: center; margin-bottom: 0.5rem;">
-                                <h3 style="color: #FFD700; margin: 0; font-size: 1.3rem;">
-                                    🕐 ${apt.time} - ${apt.customerName}
-                                </h3>
-                                <span style="
-                                    background: rgba(255, 215, 0, 0.2);
-                                    color: #FFD700;
-                                    padding: 0.2rem 0.5rem;
-                                    border-radius: 15px;
-                                    font-size: 0.7rem;
-                                    margin-left: 0.5rem;
-                                    text-transform: uppercase;
-                                    font-weight: bold;
-                                ">${apt.status || 'NOVO'}</span>
-                            </div>
+        try {
+            // Get all appointments from localStorage
+            const stored = localStorage.getItem('barbershopAppointments');
+            console.log('Raw localStorage data:', stored);
+            
+            const allAppointments = stored ? JSON.parse(stored) : [];
+            console.log('All appointments loaded:', allAppointments.length);
+            
+            // Get today's date in YYYY-MM-DD format
+            const today = new Date().toISOString().split('T')[0];
+            console.log('Today date for filtering:', today);
+            
+            // Filter today's appointments
+            const todayAppointments = allAppointments.filter(apt => {
+                console.log(`Comparing appointment date ${apt.date} with today ${today}`);
+                return apt.date === today;
+            });
+            
+            console.log('Today appointments found:', todayAppointments.length);
+            console.log('Today appointments:', todayAppointments);
+            
+            const appointmentsList = document.getElementById('appointmentsList');
+            if (!appointmentsList) {
+                console.error('appointmentsList element not found');
+                return;
+            }
+            
+            if (todayAppointments.length === 0) {
+                appointmentsList.innerHTML = `
+                    <div style="
+                        background: linear-gradient(145deg, #2a2a2a, #1a1a1a);
+                        border: 1px solid #333;
+                        border-radius: 10px;
+                        padding: 2rem;
+                        text-align: center;
+                        color: #ccc;
+                    ">
+                        <div style="font-size: 3rem; opacity: 0.5; margin-bottom: 1rem;">📅</div>
+                        <p style="margin: 0; font-size: 1.1rem;">
+                            Nenhum agendamento encontrado para hoje (${today}).<br>
+                            Total de agendamentos no sistema: ${allAppointments.length}<br>
+                            Os agendamentos feitos pelo site aparecerão aqui automaticamente.
+                        </p>
+                        <div style="margin-top: 1.5rem;">
+                            <button onclick="showAllAppointments()" style="
+                                background: #FFD700;
+                                color: #000;
+                                border: none;
+                                padding: 0.5rem 1rem;
+                                border-radius: 5px;
+                                cursor: pointer;
+                                margin: 0.25rem;
+                            ">Ver Todos os Agendamentos</button>
                             
-                            <p style="margin: 0.3rem 0; color: white; font-size: 1rem;">✂️ ${apt.service}</p>
-                            <p style="margin: 0.3rem 0; color: white; font-size: 1rem;">📱 ${apt.phone}</p>
-                            ${apt.email ? `<p style="margin: 0.3rem 0; color: white; font-size: 1rem;">📧 ${apt.email}</p>` : ''}
-                            ${apt.notes ? `<p style="margin: 0.5rem 0 0 0; color: #ccc; font-style: italic; font-size: 0.9rem;">📝 "${apt.notes}"</p>` : ''}
-                            
-                            <p style="
-                                margin: 0.5rem 0 0 0;
-                                color: #666;
-                                font-size: 0.8rem;
-                            ">
-                                Agendado em: ${new Date(apt.timestamp).toLocaleString('pt-BR', {
-                                    day: '2-digit',
-                                    month: '2-digit',
-                                    hour: '2-digit',
-                                    minute: '2-digit'
-                                })}
-                            </p>
-                        </div>
-                        
-                        <div style="
-                            display: flex;
-                            flex-direction: column;
-                            gap: 0.5rem;
-                            min-width: 140px;
-                        ">
-                            <button onclick="sendConfirmationWhatsApp('${apt.phone}', '${apt.customerName}', '${apt.service}', '${apt.time}', '${apt.date}')" style="
-                                background: #25d366;
+                            <button onclick="debugAppointments()" style="
+                                background: #666;
                                 color: white;
                                 border: none;
-                                padding: 0.6rem 1rem;
-                                border-radius: 8px;
+                                padding: 0.5rem 1rem;
+                                border-radius: 5px;
                                 cursor: pointer;
-                                font-size: 0.9rem;
-                                font-weight: 500;
-                                transition: all 0.3s ease;
-                                white-space: nowrap;
-                            " onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform='none'">
-                                📱 Confirmar
-                            </button>
-                            
-                            <button onclick="sendReminderWhatsApp('${apt.phone}', '${apt.customerName}', '${apt.time}')" style="
-                                background: #FFA500;
-                                color: white;
-                                border: none;
-                                padding: 0.6rem 1rem;
-                                border-radius: 8px;
-                                cursor: pointer;
-                                font-size: 0.9rem;
-                                font-weight: 500;
-                                transition: all 0.3s ease;
-                                white-space: nowrap;
-                            " onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform='none'">
-                                🔔 Lembrete
-                            </button>
-                            
-                            <button onclick="markAsCompleted('${apt.id}')" style="
-                                background: #32CD32;
-                                color: white;
-                                border: none;
-                                padding: 0.6rem 1rem;
-                                border-radius: 8px;
-                                cursor: pointer;
-                                font-size: 0.9rem;
-                                font-weight: 500;
-                                transition: all 0.3s ease;
-                                white-space: nowrap;
-                            " onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform='none'">
-                                ✅ Concluído
-                            </button>
+                                margin: 0.25rem;
+                            ">Debug</button>
                         </div>
                     </div>
-                </div>
-            `).join('');
+                `;
+            } else {
+                appointmentsList.innerHTML = todayAppointments.map(apt => `
+                    <div class="appointment-card" style="
+                        background: linear-gradient(145deg, #1a1a1a, #2a2a2a);
+                        border: 2px solid #FFD700;
+                        border-radius: 15px;
+                        padding: 1.5rem;
+                        margin-bottom: 1.5rem;
+                        transition: all 0.3s ease;
+                    ">
+                        <div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 1rem;">
+                            <div style="flex: 1; min-width: 250px;">
+                                <div style="display: flex; align-items: center; margin-bottom: 0.5rem;">
+                                    <h3 style="color: #FFD700; margin: 0; font-size: 1.3rem;">
+                                        🕐 ${apt.time} - ${apt.customerName}
+                                    </h3>
+                                    <span style="
+                                        background: rgba(255, 215, 0, 0.2);
+                                        color: #FFD700;
+                                        padding: 0.2rem 0.5rem;
+                                        border-radius: 15px;
+                                        font-size: 0.7rem;
+                                        margin-left: 0.5rem;
+                                        text-transform: uppercase;
+                                        font-weight: bold;
+                                    ">${apt.status || 'NOVO'}</span>
+                                </div>
+                                
+                                <p style="margin: 0.3rem 0; color: white; font-size: 1rem;">✂️ ${apt.service}</p>
+                                <p style="margin: 0.3rem 0; color: white; font-size: 1rem;">📱 ${apt.phone}</p>
+                                ${apt.email ? `<p style="margin: 0.3rem 0; color: white; font-size: 1rem;">📧 ${apt.email}</p>` : ''}
+                                ${apt.notes ? `<p style="margin: 0.5rem 0 0 0; color: #ccc; font-style: italic; font-size: 0.9rem;">📝 "${apt.notes}"</p>` : ''}
+                                
+                                <p style="
+                                    margin: 0.5rem 0 0 0;
+                                    color: #666;
+                                    font-size: 0.8rem;
+                                ">
+                                    ID: ${apt.id} | Agendado em: ${new Date(apt.timestamp).toLocaleString('pt-BR')}
+                                </p>
+                            </div>
+                            
+                            <div style="
+                                display: flex;
+                                flex-direction: column;
+                                gap: 0.5rem;
+                                min-width: 140px;
+                            ">
+                                <button onclick="sendConfirmationWhatsApp('${apt.phone}', '${apt.customerName}', '${apt.service}', '${apt.time}', '${apt.date}')" style="
+                                    background: #25d366;
+                                    color: white;
+                                    border: none;
+                                    padding: 0.6rem 1rem;
+                                    border-radius: 8px;
+                                    cursor: pointer;
+                                    font-size: 0.9rem;
+                                    font-weight: 500;
+                                    transition: all 0.3s ease;
+                                    white-space: nowrap;
+                                ">
+                                    📱 Confirmar
+                                </button>
+                                
+                                <button onclick="markAsCompleted('${apt.id}')" style="
+                                    background: #32CD32;
+                                    color: white;
+                                    border: none;
+                                    padding: 0.6rem 1rem;
+                                    border-radius: 8px;
+                                    cursor: pointer;
+                                    font-size: 0.9rem;
+                                    font-weight: 500;
+                                    transition: all 0.3s ease;
+                                    white-space: nowrap;
+                                ">
+                                    ✅ Concluído
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                `).join('');
+                
+                // Update statistics
+                updateDashboardStats(todayAppointments);
+            }
             
-            // Update dashboard statistics
-            updateDashboardStats(todayAppointments);
+        } catch (error) {
+            console.error('Error loading appointments:', error);
+            const appointmentsList = document.getElementById('appointmentsList');
+            if (appointmentsList) {
+                appointmentsList.innerHTML = `
+                    <div style="background: #dc3545; color: white; padding: 1rem; border-radius: 5px;">
+                        Erro ao carregar agendamentos: ${error.message}
+                    </div>
+                `;
+            }
         }
+    }
+
+    // Debug functions
+    function showAllAppointments() {
+        const stored = localStorage.getItem('barbershopAppointments');
+        const allAppointments = stored ? JSON.parse(stored) : [];
+        
+        const appointmentsList = document.getElementById('appointmentsList');
+        appointmentsList.innerHTML = `
+            <div style="background: #1a1a1a; padding: 1rem; border-radius: 5px;">
+                <h3 style="color: #FFD700;">Todos os Agendamentos (${allAppointments.length})</h3>
+                ${allAppointments.length === 0 ? '<p style="color: #ccc;">Nenhum agendamento encontrado.</p>' : allAppointments.map(apt => `
+                    <div style="border: 1px solid #333; padding: 0.5rem; margin: 0.5rem 0; border-radius: 3px;">
+                        <strong style="color: #FFD700;">${apt.customerName}</strong> - ${apt.date} às ${apt.time}<br>
+                        <span style="color: white;">Serviço: ${apt.service}</span><br>
+                        <span style="color: #ccc;">Telefone: ${apt.phone}</span><br>
+                        <small style="color: #666;">ID: ${apt.id} | Criado: ${new Date(apt.timestamp).toLocaleString('pt-BR')}</small>
+                    </div>
+                `).join('')}
+                <button onclick="loadAppointments()" style="
+                    background: #FFD700;
+                    color: #000;
+                    border: none;
+                    padding: 0.5rem 1rem;
+                    border-radius: 5px;
+                    cursor: pointer;
+                    margin-top: 1rem;
+                ">Voltar para Hoje</button>
+            </div>
+        `;
+    }
+
+    function debugAppointments() {
+        const stored = localStorage.getItem('barbershopAppointments');
+        const today = new Date().toISOString().split('T')[0];
+        
+        console.log('=== DEBUG INFO ===');
+        console.log('Today:', today);
+        console.log('Raw localStorage:', stored);
+        
+        if (stored) {
+            const appointments = JSON.parse(stored);
+            console.log('Parsed appointments:', appointments);
+            appointments.forEach((apt, index) => {
+                console.log(`Appointment ${index}:`, apt);
+            });
+        }
+        
+        alert(`Debug info logged to console.\n\nToday: ${today}\nTotal appointments: ${stored ? JSON.parse(stored).length : 0}\n\nCheck browser console (F12) for detailed logs.`);
     }
 
     function sendConfirmationWhatsApp(phone, name, service, time, date) {
