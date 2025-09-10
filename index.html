@@ -1933,47 +1933,253 @@
         const todayAppointments = appointments.filter(apt => apt.date === today);
         
         const appointmentsList = document.getElementById('appointmentsList');
+        if (!appointmentsList) return;
+        
         if (todayAppointments.length === 0) {
             appointmentsList.innerHTML = `
-                <p style="color: #ccc; margin: 0;">
-                    Nenhum agendamento encontrado para hoje.<br>
-                    Os agendamentos feitos pelo site aparecerão aqui automaticamente.
-                    <br><br>
-                    <small>Para testar: faça um agendamento pelo formulário do site</small>
-                </p>
+                <div style="
+                    background: linear-gradient(145deg, #2a2a2a, #1a1a1a);
+                    border: 1px solid #333;
+                    border-radius: 10px;
+                    padding: 2rem;
+                    text-align: center;
+                    color: #ccc;
+                ">
+                    <div style="font-size: 3rem; opacity: 0.5; margin-bottom: 1rem;">📅</div>
+                    <p style="margin: 0; font-size: 1.1rem;">
+                        Nenhum agendamento encontrado para hoje.<br>
+                        Os agendamentos feitos pelo site aparecerão aqui automaticamente.
+                    </p>
+                    <p style="margin-top: 1rem; font-size: 0.9rem; opacity: 0.7;">
+                        Para testar: faça um agendamento pelo formulário do site
+                    </p>
+                </div>
             `;
         } else {
             appointmentsList.innerHTML = todayAppointments.map(apt => `
-                <div style="
+                <div class="appointment-card" style="
                     background: linear-gradient(145deg, #1a1a1a, #2a2a2a);
-                    border: 1px solid #FFD700;
-                    border-radius: 10px;
-                    padding: 1rem;
-                    margin-bottom: 1rem;
-                    text-align: left;
+                    border: 2px solid #FFD700;
+                    border-radius: 15px;
+                    padding: 1.5rem;
+                    margin-bottom: 1.5rem;
+                    transition: all 0.3s ease;
                 ">
-                    <div style="display: flex; justify-content: space-between; align-items: center;">
-                        <div>
-                            <h3 style="color: #FFD700; margin: 0;">${apt.time} - ${apt.customerName}</h3>
-                            <p style="margin: 0.5rem 0;">✂️ ${apt.service}</p>
-                            <p style="margin: 0.5rem 0;">📱 ${apt.phone}</p>
-                            ${apt.notes ? `<p style="margin: 0.5rem 0;">📝 "${apt.notes}"</p>` : ''}
+                    <div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 1rem;">
+                        <div style="flex: 1; min-width: 250px;">
+                            <div style="display: flex; align-items: center; margin-bottom: 0.5rem;">
+                                <h3 style="color: #FFD700; margin: 0; font-size: 1.3rem;">
+                                    🕐 ${apt.time} - ${apt.customerName}
+                                </h3>
+                                <span style="
+                                    background: rgba(255, 215, 0, 0.2);
+                                    color: #FFD700;
+                                    padding: 0.2rem 0.5rem;
+                                    border-radius: 15px;
+                                    font-size: 0.7rem;
+                                    margin-left: 0.5rem;
+                                    text-transform: uppercase;
+                                    font-weight: bold;
+                                ">${apt.status || 'NOVO'}</span>
+                            </div>
+                            
+                            <p style="margin: 0.3rem 0; color: white; font-size: 1rem;">✂️ ${apt.service}</p>
+                            <p style="margin: 0.3rem 0; color: white; font-size: 1rem;">📱 ${apt.phone}</p>
+                            ${apt.email ? `<p style="margin: 0.3rem 0; color: white; font-size: 1rem;">📧 ${apt.email}</p>` : ''}
+                            ${apt.notes ? `<p style="margin: 0.5rem 0 0 0; color: #ccc; font-style: italic; font-size: 0.9rem;">📝 "${apt.notes}"</p>` : ''}
+                            
+                            <p style="
+                                margin: 0.5rem 0 0 0;
+                                color: #666;
+                                font-size: 0.8rem;
+                            ">
+                                Agendado em: ${new Date(apt.timestamp).toLocaleString('pt-BR', {
+                                    day: '2-digit',
+                                    month: '2-digit',
+                                    hour: '2-digit',
+                                    minute: '2-digit'
+                                })}
+                            </p>
                         </div>
-                        <div>
-                            <button onclick="sendWhatsApp('${apt.phone}', '${apt.customerName}', '${apt.service}', '${apt.time}')" style="
+                        
+                        <div style="
+                            display: flex;
+                            flex-direction: column;
+                            gap: 0.5rem;
+                            min-width: 140px;
+                        ">
+                            <button onclick="sendConfirmationWhatsApp('${apt.phone}', '${apt.customerName}', '${apt.service}', '${apt.time}', '${apt.date}')" style="
                                 background: #25d366;
                                 color: white;
                                 border: none;
-                                padding: 0.5rem 1rem;
-                                border-radius: 5px;
+                                padding: 0.6rem 1rem;
+                                border-radius: 8px;
                                 cursor: pointer;
-                                margin: 0.25rem;
-                            ">📱 WhatsApp</button>
+                                font-size: 0.9rem;
+                                font-weight: 500;
+                                transition: all 0.3s ease;
+                                white-space: nowrap;
+                            " onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform='none'">
+                                📱 Confirmar
+                            </button>
+                            
+                            <button onclick="sendReminderWhatsApp('${apt.phone}', '${apt.customerName}', '${apt.time}')" style="
+                                background: #FFA500;
+                                color: white;
+                                border: none;
+                                padding: 0.6rem 1rem;
+                                border-radius: 8px;
+                                cursor: pointer;
+                                font-size: 0.9rem;
+                                font-weight: 500;
+                                transition: all 0.3s ease;
+                                white-space: nowrap;
+                            " onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform='none'">
+                                🔔 Lembrete
+                            </button>
+                            
+                            <button onclick="markAsCompleted('${apt.id}')" style="
+                                background: #32CD32;
+                                color: white;
+                                border: none;
+                                padding: 0.6rem 1rem;
+                                border-radius: 8px;
+                                cursor: pointer;
+                                font-size: 0.9rem;
+                                font-weight: 500;
+                                transition: all 0.3s ease;
+                                white-space: nowrap;
+                            " onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform='none'">
+                                ✅ Concluído
+                            </button>
                         </div>
                     </div>
                 </div>
             `).join('');
+            
+            // Update dashboard statistics
+            updateDashboardStats(todayAppointments);
         }
+    }
+
+    function sendConfirmationWhatsApp(phone, name, service, time, date) {
+        const dateFormatted = new Date(date).toLocaleDateString('pt-BR');
+        const message = `Oi ${name}! 👋
+
+Você tem agendamento ${dateFormatted} às ${time} na Mondadori Barbershop:
+✂️ Serviço: ${service}
+📍 Rua Marechal Hermes, 2055, Curitiba
+
+Confirma sua presença? 🤔
+
+✅ SIM - Estarei lá!
+❌ NÃO - Preciso reagendar`;
+
+        const whatsappUrl = `https://wa.me/55${phone.replace(/\D/g, '')}?text=${encodeURIComponent(message)}`;
+        window.open(whatsappUrl, '_blank');
+    }
+
+    function sendReminderWhatsApp(phone, name, time) {
+        const message = `📅 LEMBRETE - Mondadori Barbershop
+
+Oi ${name}! Seu horário é HOJE às ${time}!
+Não esqueça! 😉💈
+📍 Rua Marechal Hermes, 2055
+
+Nos vemos lá! 🔥`;
+
+        const whatsappUrl = `https://wa.me/55${phone.replace(/\D/g, '')}?text=${encodeURIComponent(message)}`;
+        window.open(whatsappUrl, '_blank');
+    }
+
+    function markAsCompleted(appointmentId) {
+        try {
+            const appointments = JSON.parse(localStorage.getItem('barbershopAppointments') || '[]');
+            const updatedAppointments = appointments.map(apt => {
+                if (apt.id === appointmentId) {
+                    apt.status = 'concluido';
+                    apt.completedAt = new Date().toISOString();
+                }
+                return apt;
+            });
+            
+            localStorage.setItem('barbershopAppointments', JSON.stringify(updatedAppointments));
+            loadAppointments(); // Reload the list
+            console.log('Appointment marked as completed:', appointmentId);
+        } catch (error) {
+            console.error('Error marking appointment as completed:', error);
+        }
+    }
+
+    function updateDashboardStats(appointments) {
+        // Calculate basic statistics
+        const totalAppointments = appointments.length;
+        const completedAppointments = appointments.filter(apt => apt.status === 'concluido').length;
+        
+        // Calculate estimated revenue based on common services
+        let totalRevenue = 0;
+        appointments.forEach(apt => {
+            const service = apt.service.toLowerCase();
+            if (service.includes('corte') && service.includes('barba')) {
+                totalRevenue += 80; // Corte + Barba
+            } else if (service.includes('corte')) {
+                totalRevenue += 40;
+            } else if (service.includes('barba')) {
+                totalRevenue += 40;
+            } else if (service.includes('platinado')) {
+                totalRevenue += 250;
+            } else if (service.includes('luzes')) {
+                totalRevenue += 200;
+            } else if (service.includes('selagem')) {
+                totalRevenue += 90;
+            } else {
+                totalRevenue += 40; // Default service price
+            }
+        });
+        
+        // Update stats display
+        const amountElement = document.querySelector('.amount');
+        const countElement = document.querySelector('.count');
+        const rateElement = document.querySelector('.rate');
+        const nextClientElement = document.querySelector('.next-client');
+        
+        if (amountElement) {
+            amountElement.textContent = `R$ ${totalRevenue.toFixed(2).replace('.', ',')}`;
+        }
+        
+        if (countElement) {
+            countElement.textContent = totalAppointments;
+        }
+        
+        if (rateElement) {
+            const rate = totalAppointments > 0 ? Math.round((completedAppointments / totalAppointments) * 100) : 100;
+            rateElement.textContent = `${rate}%`;
+        }
+        
+        if (nextClientElement) {
+            const now = new Date();
+            const currentTime = now.getHours() * 100 + now.getMinutes(); // Convert to HHMM format
+            
+            const upcomingAppointments = appointments
+                .filter(apt => {
+                    const aptTime = parseInt(apt.time.replace(':', ''));
+                    return aptTime > currentTime && apt.status !== 'concluido';
+                })
+                .sort((a, b) => a.time.localeCompare(b.time));
+            
+            if (upcomingAppointments.length > 0) {
+                const next = upcomingAppointments[0];
+                nextClientElement.textContent = `${next.time} - ${next.customerName}`;
+            } else {
+                nextClientElement.textContent = 'Nenhum agendamento';
+            }
+        }
+        
+        console.log('Dashboard stats updated:', {
+            appointments: totalAppointments,
+            revenue: totalRevenue,
+            completed: completedAppointments
+        });
     }
 
     function sendWhatsApp(phone, name, service, time) {
@@ -2405,10 +2611,12 @@ Aguardo confirmação do agendamento! 💈`;
                 window.open(whatsappURL, '_blank');
                 
                 // Show success message
-                alert('Redirecionando para o WhatsApp! Sua mensagem de agendamento foi preparada.');
+                showSuccessModal();
                 
-                // Reset form
-                form.reset();
+                // Reset form after a short delay
+                setTimeout(() => {
+                    form.reset();
+                }, 1000);
             });
         }
 
@@ -2421,10 +2629,132 @@ Aguardo confirmação do agendamento! 💈`;
         }
 
         function saveAppointmentToStorage(appointmentData) {
-            const appointments = JSON.parse(localStorage.getItem('mondadori_appointments') || '[]');
-            appointments.push(appointmentData);
-            localStorage.setItem('mondadori_appointments', JSON.stringify(appointments));
+            try {
+                const appointments = JSON.parse(localStorage.getItem('barbershopAppointments') || '[]');
+                appointments.push(appointmentData);
+                localStorage.setItem('barbershopAppointments', JSON.stringify(appointments));
+                console.log('Appointment saved to dashboard:', appointmentData);
+            } catch (error) {
+                console.error('Error saving appointment:', error);
+            }
         }
+
+        function showSuccessModal() {
+            // Remove existing modal if any
+            const existingModal = document.getElementById('successModal');
+            if (existingModal) {
+                existingModal.remove();
+            }
+            
+            // Create success modal
+            const modalHTML = `
+                <div id="successModal" style="
+                    position: fixed;
+                    top: 0;
+                    left: 0;
+                    width: 100%;
+                    height: 100%;
+                    background: rgba(0,0,0,0.9);
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                    z-index: 9999;
+                    animation: fadeIn 0.3s ease;
+                ">
+                    <div style="
+                        background: linear-gradient(145deg, #1a1a1a, #2a2a2a);
+                        padding: 2.5rem;
+                        border-radius: 20px;
+                        border: 3px solid #FFD700;
+                        text-align: center;
+                        color: white;
+                        max-width: 450px;
+                        width: 90%;
+                        box-shadow: 0 20px 60px rgba(255, 215, 0, 0.3);
+                    ">
+                        <div style="
+                            font-size: 3rem;
+                            margin-bottom: 1rem;
+                        ">✅</div>
+                        
+                        <h2 style="
+                            color: #FFD700;
+                            margin-bottom: 1rem;
+                            font-size: 1.5rem;
+                        ">
+                            Agendamento Enviado!
+                        </h2>
+                        
+                        <p style="
+                            margin-bottom: 1.5rem;
+                            line-height: 1.6;
+                            font-size: 1rem;
+                        ">
+                            Seu agendamento foi enviado via WhatsApp para o Diego.<br>
+                            Aguarde a confirmação do seu horário!
+                        </p>
+                        
+                        <div style="
+                            background: rgba(255, 215, 0, 0.1);
+                            padding: 1rem;
+                            border-radius: 10px;
+                            margin-bottom: 1.5rem;
+                            border-left: 4px solid #FFD700;
+                        ">
+                            <p style="
+                                margin: 0;
+                                font-size: 0.9rem;
+                                color: #ccc;
+                            ">
+                                📱 Se o WhatsApp não abrir automaticamente,<br>
+                                entre em contato: <strong style="color: #FFD700;">(41) 98432-5356</strong>
+                            </p>
+                        </div>
+                        
+                        <button onclick="closeSuccessModal()" style="
+                            background: linear-gradient(45deg, #FFD700, #FFA500);
+                            border: none;
+                            padding: 1rem 2rem;
+                            border-radius: 10px;
+                            color: #000;
+                            font-weight: bold;
+                            cursor: pointer;
+                            font-size: 1rem;
+                            transition: all 0.3s ease;
+                        " onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform='none'">
+                            Entendi!
+                        </button>
+                    </div>
+                </div>
+            `;
+            
+            document.body.insertAdjacentHTML('beforeend', modalHTML);
+            
+            // Auto close after 8 seconds
+            setTimeout(closeSuccessModal, 8000);
+        }
+
+        function closeSuccessModal() {
+            const modal = document.getElementById('successModal');
+            if (modal) {
+                modal.style.animation = 'fadeOut 0.3s ease';
+                setTimeout(() => modal.remove(), 300);
+            }
+        }
+
+        // Add fade animations to CSS
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes fadeIn {
+                from { opacity: 0; }
+                to { opacity: 1; }
+            }
+            @keyframes fadeOut {
+                from { opacity: 1; }
+                to { opacity: 0; }
+            }
+        `;
+        document.head.appendChild(style);
 
         // Click outside modal to close
         document.addEventListener('click', function(e) {
