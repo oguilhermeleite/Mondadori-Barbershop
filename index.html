@@ -2179,26 +2179,98 @@ Me responde quando puder! 👍</textarea>
             }
         });
 
-        // Generate time slots
+        // Generate time slots - Enhanced version
         function generateTimeSlots() {
+            const dateInput = document.getElementById('date');
             const timeSelect = document.getElementById('time');
-            const times = [];
             
-            // Tuesday to Friday: 10:00 AM - 8:00 PM
-            // Saturday: by appointment (same hours for now)
-            for (let hour = 10; hour < 20; hour++) {
-                for (let minute = 0; minute < 60; minute += 30) {
-                    const timeString = `${hour.toString().padStart(2, '0')}:${minute.toString().padStart(2, '0')}`;
-                    times.push(timeString);
-                }
+            if (!timeSelect) return;
+            
+            // Clear existing options first
+            timeSelect.innerHTML = '';
+            
+            // Check if a date is selected
+            if (!dateInput || !dateInput.value) {
+                timeSelect.innerHTML = '<option value="">Selecione uma data primeiro</option>';
+                return;
             }
             
-            times.forEach(time => {
+            const selectedDate = new Date(dateInput.value);
+            const today = new Date();
+            const dayOfWeek = selectedDate.getDay(); // 0=Sunday, 1=Monday, etc.
+            
+            // Check if date is in the past
+            if (selectedDate < today.setHours(0,0,0,0)) {
+                timeSelect.innerHTML = '<option value="">Data deve ser futura</option>';
+                return;
+            }
+            
+            // Check if it's Sunday (0) or Monday (1) - closed days
+            if (dayOfWeek === 0 || dayOfWeek === 1) {
+                timeSelect.innerHTML = '<option value="">Fechado aos domingos e segundas</option>';
+                return;
+            }
+            
+            // Add default option
+            timeSelect.innerHTML = '<option value="">Selecione um horário</option>';
+            
+            // Generate time slots for Tuesday to Saturday (10:00 to 20:00)
+            const startHour = 10;
+            const endHour = 20;
+            
+            for (let hour = startHour; hour < endHour; hour++) {
+                // Add :00 slot
+                const time00 = String(hour).padStart(2, '0') + ':00';
+                const option00 = document.createElement('option');
+                option00.value = time00;
+                option00.textContent = time00;
+                timeSelect.appendChild(option00);
+                
+                // Add :30 slot
+                const time30 = String(hour).padStart(2, '0') + ':30';
+                const option30 = document.createElement('option');
+                option30.value = time30;
+                option30.textContent = time30;
+                timeSelect.appendChild(option30);
+            }
+            
+            console.log('Time slots generated for:', dateInput.value);
+        }
+
+        // Initialize time slots on page load
+        function initializeTimeSlots() {
+            const timeSelect = document.getElementById('time');
+            if (timeSelect) {
+                // Set initial state - no slots until date is selected
+                timeSelect.innerHTML = '<option value="">Selecione uma data primeiro</option>';
+            }
+        }
+
+        // Fallback function to populate all time slots (if needed)
+        function populateAllTimeSlots() {
+            const timeSelect = document.getElementById('time');
+            if (!timeSelect) return;
+            
+            const timeSlots = [
+                '10:00', '10:30', '11:00', '11:30', 
+                '12:00', '12:30', '13:00', '13:30',
+                '14:00', '14:30', '15:00', '15:30',
+                '16:00', '16:30', '17:00', '17:30',
+                '18:00', '18:30', '19:00', '19:30'
+            ];
+            
+            // Clear existing options
+            timeSelect.innerHTML = '<option value="">Selecione um horário</option>';
+            
+            // Add all time slots
+            timeSlots.forEach(time => {
                 const option = document.createElement('option');
                 option.value = time;
                 option.textContent = time;
                 timeSelect.appendChild(option);
             });
+            
+            console.log('All time slots populated as fallback');
         }
 
         // Date validation
@@ -2211,7 +2283,7 @@ Me responde quando puder! 👍</textarea>
             // Set minimum date to tomorrow
             dateInput.min = tomorrow.toISOString().split('T')[0];
             
-            // Disable Sundays and Mondays
+            // Handle date changes - validate and generate time slots
             dateInput.addEventListener('change', function() {
                 const selectedDate = new Date(this.value);
                 const dayOfWeek = selectedDate.getDay();
@@ -2219,6 +2291,14 @@ Me responde quando puder! 👍</textarea>
                 if (dayOfWeek === 0 || dayOfWeek === 1) { // Sunday or Monday
                     alert('Não funcionamos aos domingos e segundas-feiras. Por favor, escolha outro dia.');
                     this.value = '';
+                    // Clear time slots when date is invalid
+                    const timeSelect = document.getElementById('time');
+                    if (timeSelect) {
+                        timeSelect.innerHTML = '<option value="">Selecione uma data válida primeiro</option>';
+                    }
+                } else {
+                    // Generate time slots for valid dates
+                    generateTimeSlots();
                 }
             });
         }
@@ -2368,7 +2448,7 @@ Aguardo confirmação do agendamento! 💈`;
 
         // Initialize everything when DOM is loaded
         document.addEventListener('DOMContentLoaded', function() {
-            generateTimeSlots();
+            initializeTimeSlots();
             setupDateValidation();
             setupPhoneMask();
             setupFormSubmission();
