@@ -1,0 +1,3286 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mondadori Barbershop - Barbearia Premium em Curitiba</title>
+    <meta name="description" content="Mondadori Barbershop - A melhor barbearia de Curitiba. Serviços profissionais de corte, barba e tratamentos capilares. Agende pelo WhatsApp!">
+    <meta name="keywords" content="barbearia, corte masculino, barba, Curitiba, Diego, Mondadori">
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cpolygon points='50,10 85,30 85,70 50,90 15,70 15,30' fill='%23FFD700'/%3E%3Ctext x='50' y='58' text-anchor='middle' font-family='Arial' font-size='24' font-weight='bold' fill='%23000'%3EMB%3C/text%3E%3C/svg%3E">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Firebase SDK -->
+    <script type="module">
+        // Import Firebase modules
+        import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
+        import { getFirestore, collection, addDoc, getDocs, query, orderBy, onSnapshot, serverTimestamp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
+        
+        // Firebase Configuration
+        // IMPORTANTE: Substitua estas configurações pelas suas do Firebase Console
+        const firebaseConfig = {
+            // SUBSTITUA ESTAS CONFIGURAÇÕES PELAS SUAS DO FIREBASE CONSOLE
+            apiKey: "AIzaSyBvOxKxvtXiVfzMxKxvtXiVfzMxKxvtXiV", // Exemplo - substitua pela sua
+            authDomain: "mondadori-barbershop.firebaseapp.com", // Exemplo - substitua pela sua
+            projectId: "mondadori-barbershop", // Exemplo - substitua pela sua
+            storageBucket: "mondadori-barbershop.appspot.com", // Exemplo - substitua pela sua
+            messagingSenderId: "123456789012", // Exemplo - substitua pela sua
+            appId: "1:123456789012:web:abcdef123456789012345" // Exemplo - substitua pela sua
+        };
+        
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+        
+        // Make Firebase available globally
+        window.firebaseApp = app;
+        window.firebaseDb = db;
+        window.firebaseModules = {
+            collection,
+            addDoc,
+            getDocs,
+            query,
+            orderBy,
+            onSnapshot,
+            serverTimestamp
+        };
+        
+        console.log('🔥 Firebase inicializado com sucesso!');
+    </script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-gold: #FFD700;
+            --secondary-gold: #B8860B;
+            --accent-orange: #FFA500;
+            --black: #000000;
+            --dark-gray: #1a1a1a;
+            --regular-text: #CCCCCC;
+            --contrast-text: #ffffff;
+            --transition: all 0.3s ease;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: var(--regular-text);
+            background: var(--black);
+            overflow-x: hidden;
+        }
+
+        /* Header Styles */
+        .header {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background: rgba(0, 0, 0, 0.95);
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+            padding: 1rem 0;
+            transition: var(--transition);
+        }
+
+        .header.scrolled {
+            background: rgba(0, 0, 0, 0.98);
+            box-shadow: 0 2px 20px rgba(255, 215, 0, 0.3);
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 2rem;
+        }
+
+        /* Logo */
+        .logo {
+            display: flex;
+            align-items: center;
+            text-decoration: none;
+        }
+
+        .logo img {
+            height: 80px;
+            filter: drop-shadow(0 0 10px rgba(255, 215, 0, 0.5));
+        }
+
+        /* Navigation */
+        .nav-menu {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+        }
+
+        .nav-link {
+            color: var(--regular-text);
+            text-decoration: none;
+            font-weight: 500;
+            transition: var(--transition);
+            position: relative;
+        }
+
+        .nav-link:hover {
+            color: var(--primary-gold);
+        }
+
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--primary-gold);
+            transition: var(--transition);
+        }
+
+        .nav-link:hover::after {
+            width: 100%;
+        }
+
+        .mobile-menu-toggle {
+            display: none;
+            flex-direction: column;
+            cursor: pointer;
+            padding: 5px;
+        }
+
+        .hamburger {
+            width: 25px;
+            height: 3px;
+            background: var(--primary-gold);
+            margin: 3px 0;
+            transition: var(--transition);
+        }
+
+        /* Hero Section */
+        .hero {
+            min-height: 100vh;
+            background: linear-gradient(135deg, rgba(0,0,0,0.8), rgba(26,26,26,0.9)), 
+                        url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 600"><rect fill="%23000" width="1200" height="600"/><g fill="%23FFD700" opacity="0.1"><polygon points="100,50 200,50 150,150"/><polygon points="300,100 400,100 350,200"/><polygon points="500,150 600,150 550,250"/><polygon points="700,50 800,50 750,150"/><polygon points="900,100 1000,100 950,200"/></g></svg>');
+            background-size: cover;
+            background-position: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            position: relative;
+        }
+
+        .hero-content {
+            max-width: 800px;
+            padding: 0 2rem;
+            animation: fadeInUp 1s ease;
+        }
+
+        .hero h1 {
+            font-size: 4rem;
+            font-weight: bold;
+            margin-bottom: 1rem;
+            background: linear-gradient(45deg, var(--primary-gold), var(--accent-orange));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+        }
+
+        .hero p {
+            font-size: 1.3rem;
+            margin-bottom: 2rem;
+            opacity: 0.9;
+        }
+
+        .cta-button {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: linear-gradient(45deg, var(--primary-gold), var(--accent-orange));
+            color: var(--black);
+            padding: 1rem 2rem;
+            text-decoration: none;
+            font-weight: bold;
+            border-radius: 50px;
+            transition: var(--transition);
+            box-shadow: 0 5px 15px rgba(255, 215, 0, 0.4);
+        }
+
+        .cta-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(255, 215, 0, 0.6);
+        }
+
+        /* Section Styles */
+        .section {
+            padding: 5rem 0;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding-left: 2rem;
+            padding-right: 2rem;
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 3rem;
+            margin-bottom: 3rem;
+            color: var(--primary-gold);
+            position: relative;
+        }
+
+        .section-title::after {
+            content: '';
+            display: block;
+            width: 100px;
+            height: 3px;
+            background: linear-gradient(45deg, var(--primary-gold), var(--accent-orange));
+            margin: 1rem auto;
+        }
+
+        /* About Section */
+        .about-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 3rem;
+            align-items: center;
+        }
+
+        .about-text h3 {
+            color: var(--primary-gold);
+            font-size: 2rem;
+            margin-bottom: 1rem;
+        }
+
+        .about-text p {
+            font-size: 1.1rem;
+            margin-bottom: 1.5rem;
+            line-height: 1.8;
+        }
+
+        .about-image {
+            text-align: center;
+        }
+
+        .about-image .placeholder {
+            width: 300px;
+            height: 300px;
+            background: linear-gradient(45deg, var(--primary-gold), var(--accent-orange));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto;
+            font-size: 3rem;
+            color: var(--black);
+            box-shadow: 0 10px 30px rgba(255, 215, 0, 0.3);
+        }
+
+        /* Services Section */
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-top: 3rem;
+        }
+
+        .service-card {
+            background: var(--dark-gray);
+            padding: 1.5rem;
+            border-radius: 15px;
+            text-align: center;
+            transition: var(--transition);
+            border: 2px solid transparent;
+            position: relative;
+            overflow: hidden;
+            min-height: 140px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .service-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(45deg, var(--primary-gold), var(--accent-orange));
+            transform: scaleX(0);
+            transition: var(--transition);
+        }
+
+        .service-card:hover {
+            transform: translateY(-10px);
+            border-color: var(--primary-gold);
+            box-shadow: 0 15px 30px rgba(255, 215, 0, 0.2);
+        }
+
+        .service-card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .service-icon {
+            font-size: 2.5rem;
+            color: var(--primary-gold);
+            margin-bottom: 0.75rem;
+        }
+
+        .service-name {
+            font-size: 1.1rem;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+            color: var(--primary-gold);
+        }
+
+        .service-price {
+            font-size: 1.3rem;
+            font-weight: bold;
+            color: var(--contrast-text);
+        }
+
+        /* Package Section */
+        .packages-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .package-card {
+            background: linear-gradient(135deg, var(--dark-gray), #2a2a2a);
+            padding: 2.5rem;
+            border-radius: 20px;
+            text-align: center;
+            border: 3px solid var(--primary-gold);
+            position: relative;
+            overflow: hidden;
+            transition: var(--transition);
+        }
+
+        .package-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(255, 215, 0, 0.1), transparent);
+            transform: rotate(45deg);
+            transition: var(--transition);
+            opacity: 0;
+        }
+
+        .package-card:hover::before {
+            animation: shine 1.5s ease-in-out;
+        }
+
+        .package-card:hover {
+            transform: scale(1.05);
+            box-shadow: 0 20px 40px rgba(255, 215, 0, 0.3);
+        }
+
+        .package-name {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--primary-gold);
+            margin-bottom: 1rem;
+        }
+
+        .package-price {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: var(--contrast-text);
+            margin-bottom: 1rem;
+        }
+
+        .package-description {
+            opacity: 0.9;
+            line-height: 1.6;
+        }
+
+        /* Booking Section */
+        .booking {
+            background: var(--dark-gray);
+            padding: 5rem 0;
+        }
+
+        .booking-form {
+            max-width: 600px;
+            margin: 0 auto;
+            background: var(--black);
+            padding: 3rem;
+            border-radius: 20px;
+            border: 2px solid var(--primary-gold);
+            box-shadow: 0 15px 35px rgba(255, 215, 0, 0.2);
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: var(--primary-gold);
+            font-weight: 500;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 1rem;
+            border: 2px solid #333;
+            border-radius: 10px;
+            background: var(--dark-gray);
+            color: var(--contrast-text);
+            font-size: 1rem;
+            transition: var(--transition);
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: var(--primary-gold);
+            box-shadow: 0 0 10px rgba(255, 215, 0, 0.3);
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        .submit-btn {
+            width: 100%;
+            background: linear-gradient(45deg, var(--primary-gold), var(--accent-orange));
+            color: var(--black);
+            padding: 1rem;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255, 215, 0, 0.4);
+        }
+
+        /* Contact Section */
+        .contact-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 3rem;
+            align-items: start;
+        }
+
+        .contact-info h3 {
+            color: var(--primary-gold);
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .contact-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1rem;
+            padding: 1rem;
+            background: var(--dark-gray);
+            border-radius: 10px;
+            transition: var(--transition);
+        }
+
+        .contact-item:hover {
+            background: #2a2a2a;
+            transform: translateX(10px);
+        }
+
+        .contact-item i {
+            color: var(--primary-gold);
+            font-size: 1.5rem;
+            margin-right: 1rem;
+            width: 30px;
+        }
+
+        .map-container {
+            height: 400px;
+            border-radius: 15px;
+            overflow: hidden;
+            border: 3px solid var(--primary-gold);
+        }
+
+        /* WhatsApp Float Button */
+        .whatsapp-float {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: #25D366;
+            color: white;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            text-decoration: none;
+            box-shadow: 0 5px 20px rgba(37, 211, 102, 0.4);
+            z-index: 1000;
+            transition: var(--transition);
+            animation: pulse 2s infinite;
+        }
+
+        .whatsapp-float:hover {
+            transform: scale(1.1);
+            box-shadow: 0 8px 25px rgba(37, 211, 102, 0.6);
+        }
+
+        /* Footer */
+        .footer {
+            background: var(--black);
+            padding: 3rem 0 1rem;
+            text-align: center;
+            border-top: 2px solid var(--primary-gold);
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        .social-links {
+            margin-bottom: 2rem;
+        }
+
+        .social-links a {
+            color: var(--primary-gold);
+            font-size: 2rem;
+            margin: 0 1rem;
+            transition: var(--transition);
+        }
+
+        .social-links a:hover {
+            color: var(--accent-orange);
+            transform: translateY(-3px);
+        }
+
+        .footer-text {
+            opacity: 0.8;
+            font-size: 0.9rem;
+        }
+
+
+
+
+        .dashboard-header {
+            background: linear-gradient(135deg, var(--dark-gray) 0%, var(--black) 100%);
+            padding: 1.5rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 3px solid var(--primary-gold);
+            box-shadow: 0 2px 20px rgba(255, 215, 0, 0.3);
+        }
+
+        .dashboard-header h1 {
+            color: var(--primary-gold);
+            font-size: 2rem;
+            margin: 0;
+        }
+
+        .date-info {
+            color: var(--accent-orange);
+            font-size: 1.1rem;
+            font-weight: 500;
+        }
+
+        .logout-btn {
+            background: linear-gradient(45deg, #dc3545, #c82333);
+            color: white;
+            border: none;
+            padding: 0.8rem 1.5rem;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: var(--transition);
+        }
+
+        .logout-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(220, 53, 69, 0.4);
+        }
+
+        .dashboard-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            padding: 2rem;
+            background: linear-gradient(135deg, rgba(26, 26, 26, 0.5), rgba(0, 0, 0, 0.8));
+        }
+
+        .stat-card {
+            background: linear-gradient(145deg, var(--dark-gray), #2a2a2a);
+            padding: 2rem;
+            border-radius: 15px;
+            border: 2px solid var(--primary-gold);
+            text-align: center;
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--primary-gold), var(--accent-orange));
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(255, 215, 0, 0.3);
+        }
+
+        .stat-card h3 {
+            color: var(--primary-gold);
+            font-size: 1.1rem;
+            margin-bottom: 1rem;
+        }
+
+        .stat-card .amount,
+        .stat-card .count,
+        .stat-card .rate {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: var(--contrast-text);
+            display: block;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-card .next-client {
+            font-size: 1.2rem;
+            color: var(--accent-orange);
+            font-weight: 500;
+        }
+
+        .dashboard-content {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 2rem;
+            padding: 2rem;
+        }
+
+        .appointments-section,
+        .weekly-view {
+            background: linear-gradient(145deg, var(--dark-gray), #2a2a2a);
+            border-radius: 15px;
+            padding: 2rem;
+            border: 2px solid rgba(255, 215, 0, 0.3);
+        }
+
+        .appointments-section h2,
+        .weekly-view h2 {
+            color: var(--primary-gold);
+            font-size: 1.5rem;
+            margin-bottom: 1.5rem;
+            border-bottom: 2px solid var(--accent-orange);
+            padding-bottom: 0.5rem;
+        }
+
+        .appointment-card {
+            background: linear-gradient(145deg, #2a2a2a, var(--dark-gray));
+            border: 2px solid #333;
+            border-radius: 15px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            transition: var(--transition);
+            position: relative;
+        }
+
+        .appointment-card:hover {
+            border-color: var(--primary-gold);
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(255, 215, 0, 0.2);
+        }
+
+        .appointment-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 1rem;
+        }
+
+        .appointment-time {
+            font-size: 1.3rem;
+            font-weight: bold;
+            color: var(--primary-gold);
+        }
+
+        .appointment-details h3 {
+            color: var(--contrast-text);
+            font-size: 1.2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .appointment-details p {
+            margin-bottom: 0.3rem;
+            opacity: 0.9;
+        }
+
+        .appointment-details .phone {
+            color: var(--accent-orange);
+            font-weight: 500;
+        }
+
+        .appointment-details .notes {
+            font-style: italic;
+            color: var(--regular-text);
+            font-size: 0.9rem;
+        }
+
+        .status-badge {
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: bold;
+            display: inline-block;
+            margin-bottom: 1rem;
+        }
+
+        .status-badge.novo { background: var(--accent-orange); color: var(--black); }
+        .status-badge.contactado { background: #4169E1; color: white; }
+        .status-badge.confirmado { background: #32CD32; color: var(--black); }
+        .status-badge.em-andamento { background: var(--primary-gold); color: var(--black); }
+        .status-badge.concluido { background: #228B22; color: white; }
+        .status-badge.cancelado { background: #DC143C; color: white; }
+
+        .appointment-actions {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 0.5rem;
+        }
+
+        .action-btn {
+            padding: 0.6rem 1rem;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.3rem;
+        }
+
+        .action-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 3px 15px rgba(255, 215, 0, 0.3);
+        }
+
+        .whatsapp-btn { background: #25d366; color: white; }
+        .confirm-btn { background: #32CD32; color: var(--black); }
+        .reschedule-btn { background: var(--accent-orange); color: var(--black); }
+        .cancel-btn { background: #DC143C; color: white; }
+        .complete-btn { background: #228B22; color: white; }
+
+        .no-appointments {
+            text-align: center;
+            color: var(--regular-text);
+            font-size: 1.1rem;
+            opacity: 0.7;
+            padding: 2rem;
+        }
+
+        .weekly-stats {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .weekly-stat-item {
+            background: rgba(255, 215, 0, 0.1);
+            padding: 1rem;
+            border-radius: 10px;
+            border-left: 4px solid var(--primary-gold);
+        }
+
+        .weekly-stat-item h4 {
+            color: var(--primary-gold);
+            margin-bottom: 0.5rem;
+        }
+
+        .weekly-stat-item span {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: var(--contrast-text);
+        }
+
+        /* Settings Panel */
+        .settings-panel {
+            display: none;
+            background: linear-gradient(145deg, var(--dark-gray), #2a2a2a);
+            border-radius: 15px;
+            padding: 2rem;
+            margin: 2rem;
+            border: 2px solid var(--primary-gold);
+        }
+
+        .settings-panel.active {
+            display: block;
+        }
+
+        .settings-panel h2 {
+            color: var(--primary-gold);
+            margin-bottom: 2rem;
+            border-bottom: 2px solid var(--accent-orange);
+            padding-bottom: 0.5rem;
+        }
+
+        .settings-section {
+            margin-bottom: 2rem;
+            background: rgba(255, 215, 0, 0.05);
+            padding: 1.5rem;
+            border-radius: 10px;
+            border: 1px solid rgba(255, 215, 0, 0.2);
+        }
+
+        .settings-section h3 {
+            color: var(--accent-orange);
+            margin-bottom: 1rem;
+        }
+
+        .settings-section input,
+        .settings-section textarea {
+            width: 100%;
+            padding: 0.8rem;
+            margin: 0.5rem 0;
+            border: 2px solid #333;
+            border-radius: 8px;
+            background: var(--black);
+            color: var(--contrast-text);
+            font-size: 1rem;
+        }
+
+        .settings-section input:focus,
+        .settings-section textarea:focus {
+            outline: none;
+            border-color: var(--primary-gold);
+            box-shadow: 0 0 10px rgba(255, 215, 0, 0.3);
+        }
+
+        .settings-section button {
+            background: linear-gradient(45deg, var(--primary-gold), var(--accent-orange));
+            color: var(--black);
+            border: none;
+            padding: 0.8rem 1.5rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            margin-top: 1rem;
+            transition: var(--transition);
+        }
+
+        .settings-section button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255, 215, 0, 0.4);
+        }
+
+        .nav-tabs {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            border-bottom: 2px solid rgba(255, 215, 0, 0.3);
+        }
+
+        .nav-tab {
+            background: none;
+            border: none;
+            color: var(--regular-text);
+            padding: 1rem 1.5rem;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 500;
+            border-radius: 10px 10px 0 0;
+            transition: var(--transition);
+        }
+
+        .nav-tab.active,
+        .nav-tab:hover {
+            background: linear-gradient(45deg, var(--primary-gold), var(--accent-orange));
+            color: var(--black);
+        }
+
+        .success-message {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: #32CD32;
+            color: var(--black);
+            padding: 1rem 2rem;
+            border-radius: 10px;
+            font-weight: bold;
+            z-index: 3000;
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .success-message.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes pulse {
+            0% {
+                box-shadow: 0 0 0 0 rgba(37, 211, 102, 0.7);
+            }
+            70% {
+                box-shadow: 0 0 0 10px rgba(37, 211, 102, 0);
+            }
+            100% {
+                box-shadow: 0 0 0 0 rgba(37, 211, 102, 0);
+            }
+        }
+
+        @keyframes shine {
+            0% {
+                opacity: 0;
+                transform: translateX(-100%) translateY(-100%) rotate(45deg);
+            }
+            50% {
+                opacity: 1;
+            }
+            100% {
+                opacity: 0;
+                transform: translateX(100%) translateY(100%) rotate(45deg);
+            }
+        }
+
+        /* Mobile Responsive for Dashboard */
+        @media (max-width: 768px) {
+            .dashboard-header {
+                flex-direction: column;
+                gap: 1rem;
+                text-align: center;
+            }
+            
+            .dashboard-header h1 {
+                font-size: 1.5rem;
+            }
+            
+            .dashboard-stats {
+                grid-template-columns: 1fr;
+                padding: 1rem;
+            }
+            
+            .dashboard-content {
+                grid-template-columns: 1fr;
+                padding: 1rem;
+            }
+            
+            .appointment-actions {
+                grid-template-columns: 1fr;
+            }
+            
+            .login-container {
+                padding: 2rem 1.5rem;
+            }
+            
+            .admin-access {
+                bottom: 120px;
+                right: 20px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .stat-card .amount,
+            .stat-card .count,
+            .stat-card .rate {
+                font-size: 2rem;
+            }
+            
+            .appointment-card {
+                padding: 1rem;
+            }
+            
+            .settings-section {
+                padding: 1rem;
+            }
+        }
+
+        /* Original Responsive Design */
+        @media (max-width: 768px) {
+            .nav-menu {
+                position: fixed;
+                top: 80px;
+                left: -100%;
+                width: 100%;
+                height: calc(100vh - 80px);
+                background: rgba(0, 0, 0, 0.98);
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+                transition: var(--transition);
+            }
+
+            .nav-menu.active {
+                left: 0;
+            }
+
+            .mobile-menu-toggle {
+                display: flex;
+            }
+
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+
+            .hero p {
+                font-size: 1.1rem;
+            }
+
+            .section-title {
+                font-size: 2rem;
+            }
+
+            .about-content {
+                grid-template-columns: 1fr;
+                text-align: center;
+            }
+
+            .contact-content {
+                grid-template-columns: 1fr;
+            }
+
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+
+            .logo-main {
+                font-size: 1.3rem;
+            }
+
+            .logo-sub {
+                font-size: 0.7rem;
+            }
+
+            .nav-container {
+                padding: 0 1rem;
+            }
+
+            .section {
+                padding-left: 1rem;
+                padding-right: 1rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .hero h1 {
+                font-size: 2rem;
+            }
+
+            .section-title {
+                font-size: 1.8rem;
+            }
+
+            .booking-form {
+                padding: 2rem;
+                margin: 0 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header" id="header">
+        <nav class="nav-container">
+            <a href="#" class="logo">
+                <img src="./assets/Mondadori.jpg" alt="Mondadori Barbershop Logo">
+            </a>
+            
+            <ul class="nav-menu" id="nav-menu">
+                <li><a href="#inicio" class="nav-link">Início</a></li>
+                <li><a href="#sobre" class="nav-link">Sobre</a></li>
+                <li><a href="#servicos" class="nav-link">Serviços</a></li>
+                <li><a href="#pacotes" class="nav-link">Pacotes</a></li>
+                <li><a href="#agendamento" class="nav-link">Agendamento</a></li>
+                <li><a href="#contato" class="nav-link">Contato</a></li>
+            </ul>
+            
+            <div class="mobile-menu-toggle" id="mobile-toggle">
+                <span class="hamburger"></span>
+                <span class="hamburger"></span>
+                <span class="hamburger"></span>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Hero Section -->
+    <section id="inicio" class="hero">
+        <div class="hero-content">
+            <h1>MONDADORI BARBERSHOP</h1>
+            <p>Tradição e modernidade em cada corte. Experiência premium em barbearia com mais de 10 anos cuidando do visual masculino.</p>
+            <a href="https://chat.inbarberapp.com/SeuHorarioAqui" target="_blank" class="cta-button">
+                Agendar Agora
+            </a>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section id="sobre" class="section">
+        <h2 class="section-title">Sobre o Diego</h2>
+        <div class="about-content">
+            <div class="about-text">
+                <h3>Tradição Familiar na Barbearia</h3>
+                <p>Meu nome é Diego e sou barbeiro há mais de 10 anos. A barbearia é uma tradição de família que venho perpetuando com muito carinho e dedicação.</p>
+                <p>Na Mondadori Barbershop, cada cliente recebe um atendimento personalizado e exclusivo. Utilizamos as melhores técnicas tradicionais combinadas com tendências modernas para garantir o melhor resultado.</p>
+                <p>Nosso compromisso é com a excelência, oferecendo não apenas um corte de cabelo, mas uma experiência completa de cuidado e bem-estar masculino.</p>
+            </div>
+            <div class="about-image">
+                <div class="placeholder">
+                    <i class="fas fa-user-tie"></i>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Services Section -->
+    <section id="servicos" class="section">
+        <h2 class="section-title">Nossos Serviços</h2>
+        <div class="services-grid">
+            <div class="service-card">
+                <div class="service-icon"><i class="fas fa-cut"></i></div>
+                <div class="service-name">Corte</div>
+                <div class="service-price">R$ 35</div>
+            </div>
+            <div class="service-card">
+                <div class="service-icon"><i class="fas fa-beard"></i></div>
+                <div class="service-name">Barba</div>
+                <div class="service-price">R$ 25</div>
+            </div>
+            <div class="service-card">
+                <div class="service-icon"><i class="fas fa-scissors"></i></div>
+                <div class="service-name">Acabamento Barba</div>
+                <div class="service-price">R$ 15</div>
+            </div>
+            <div class="service-card">
+                <div class="service-icon"><i class="fas fa-cut"></i></div>
+                <div class="service-name">Acabamento Cabelo</div>
+                <div class="service-price">R$ 20</div>
+            </div>
+            <div class="service-card">
+                <div class="service-icon"><i class="fas fa-eye"></i></div>
+                <div class="service-name">Sobrancelha Navalha</div>
+                <div class="service-price">R$ 20</div>
+            </div>
+            <div class="service-card">
+                <div class="service-icon"><i class="fas fa-star"></i></div>
+                <div class="service-name">Platinado</div>
+                <div class="service-price">R$ 80</div>
+            </div>
+            <div class="service-card">
+                <div class="service-icon"><i class="fas fa-paint-brush"></i></div>
+                <div class="service-name">Luzes</div>
+                <div class="service-price">R$ 60</div>
+            </div>
+            <div class="service-card">
+                <div class="service-icon"><i class="fas fa-leaf"></i></div>
+                <div class="service-name">Selagem</div>
+                <div class="service-price">R$ 45</div>
+            </div>
+            <div class="service-card">
+                <div class="service-icon"><i class="fas fa-tint"></i></div>
+                <div class="service-name">Hidratação Barba</div>
+                <div class="service-price">R$ 25</div>
+            </div>
+            <div class="service-card">
+                <div class="service-icon"><i class="fas fa-spa"></i></div>
+                <div class="service-name">Hidratação Cabelo</div>
+                <div class="service-price">R$ 30</div>
+            </div>
+            <div class="service-card">
+                <div class="service-icon"><i class="fas fa-cut"></i></div>
+                <div class="service-name">Combo Corte + Barba</div>
+                <div class="service-price">R$ 50</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Packages Section -->
+    <section id="pacotes" class="section">
+        <h2 class="section-title">Pacotes Especiais</h2>
+        <div class="packages-grid">
+            <div class="package-card">
+                <div class="package-name">Club Cabelo</div>
+                <div class="package-price">R$ 119,90</div>
+                <div class="package-description">Pacote mensal para manutenção do cabelo com desconto especial</div>
+            </div>
+            <div class="package-card">
+                <div class="package-name">Club Cabelo & Barba</div>
+                <div class="package-price">R$ 219,90</div>
+                <div class="package-description">Pacote completo mensal para cabelo e barba com máximo desconto</div>
+            </div>
+            <div class="package-card">
+                <div class="package-name">Club Barba</div>
+                <div class="package-price">R$ 139,90</div>
+                <div class="package-description">Pacote mensal especializado em cuidados com a barba</div>
+            </div>
+            <div class="package-card">
+                <div class="package-name">Club Barba e Cabelo Raspado</div>
+                <div class="package-price">R$ 149,90</div>
+                <div class="package-description">Pacote para quem prefere o visual raspado com cuidados especiais</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Booking Section -->
+    <section id="agendamento" class="booking">
+        <div class="section">
+            <h2 class="section-title">Agendar Horário</h2>
+            <div style="text-align: center; padding: 2rem 0;">
+                <p style="color: var(--light-gray); font-size: 1.1rem; margin-bottom: 2rem;">
+                    Agende seu horário de forma rápida e prática através do nosso sistema especializado
+                </p>
+                <a href="https://chat.inbarberapp.com/SeuHorarioAqui" target="_blank" class="submit-btn" style="display: inline-block; text-decoration: none;">
+                    Agendar Horário
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contato" class="section">
+        <h2 class="section-title">Contato & Localização</h2>
+        <div class="contact-content">
+            <div class="contact-info">
+                <h3>Informações de Contato</h3>
+                
+                <div class="contact-item">
+                    <i class="fas fa-map-marker-alt"></i>
+                    <div>
+                        <strong>Endereço:</strong><br>
+                        Rua Marechal Hermes, 2055<br>
+                        Curitiba - PR
+                    </div>
+                </div>
+                
+                <div class="contact-item">
+                    <i class="fas fa-clock"></i>
+                    <div>
+                        <strong>Horário de Funcionamento:</strong><br>
+                        Terça a Sexta: 10h às 20h<br>
+                        Sábado: Sob agendamento<br>
+                        Domingo e Segunda: Fechado
+                    </div>
+                </div>
+                
+                <div class="contact-item">
+                    <i class="fab fa-whatsapp"></i>
+                    <div>
+                        <strong>WhatsApp:</strong><br>
+                        <a href="https://wa.me/5541984325356" style="color: var(--primary-gold); text-decoration: none;">
+                            (41) 98432-5356
+                        </a>
+                    </div>
+                </div>
+                
+                <div class="contact-item">
+                    <i class="fab fa-instagram"></i>
+                    <div>
+                        <strong>Instagram:</strong><br>
+                        <a href="https://instagram.com/mondadori.barbershop" style="color: var(--primary-gold); text-decoration: none;">
+                            @mondadori.barbershop
+                        </a>
+                    </div>
+                </div>
+                
+                <div class="contact-item">
+                    <i class="fab fa-facebook"></i>
+                    <div>
+                        <strong>Facebook:</strong><br>
+                        <a href="https://facebook.com/mondadori.barbershop" style="color: var(--primary-gold); text-decoration: none;">
+                            Mondadori Barbershop
+                        </a>
+                    </div>
+                </div>
+                
+                <div class="contact-item">
+                    <i class="fas fa-bus"></i>
+                    <div>
+                        <strong>Transporte Público:</strong><br>
+                        Linha "Bairro a bairro" e "Iná"<br>
+                        Estacionamento limitado disponível
+                    </div>
+                </div>
+            </div>
+            
+            <div class="map-container">
+                <iframe
+                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3602.5234567890123!2d-49.2730000!3d-25.4200000!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x94dce4c456789abc%3A0x1234567890abcdef!2sRua%20Marechal%20Hermes%2C%202055%20-%20Curitiba%20-%20PR!5e0!3m2!1spt-BR!2sbr!4v1234567890123!5m2!1spt-BR!2sbr"
+                    width="100%"
+                    height="100%"
+                    style="border:0;"
+                    allowfullscreen=""
+                    loading="lazy"
+                    referrerpolicy="no-referrer-when-downgrade">
+                </iframe>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="social-links">
+                <a href="https://wa.me/5541984325356"><i class="fab fa-whatsapp"></i></a>
+                <a href="https://instagram.com/mondadori.barbershop"><i class="fab fa-instagram"></i></a>
+                <a href="https://facebook.com/mondadori.barbershop"><i class="fab fa-facebook"></i></a>
+            </div>
+            <div class="footer-text">
+                <p>&copy; 2024 Mondadori Barbershop. Todos os direitos reservados.</p>
+                <p>Desenvolvido com ❤️ para oferecer a melhor experiência em barbearia.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- WhatsApp Float Button -->
+    <a href="https://wa.me/5541984325356" class="whatsapp-float" target="_blank">
+        <i class="fab fa-whatsapp"></i>
+    </a>
+
+
+    <script>
+    // Force attach click event to admin button
+    document.addEventListener('DOMContentLoaded', function() {
+        // Wait a moment for page to fully load
+        setTimeout(function() {
+            const adminBtn = document.getElementById('adminBtn');
+            if (adminBtn) {
+                adminBtn.addEventListener('click', openAdminModal);
+                console.log('Admin button event attached successfully');
+            }
+            
+            // Also try to find any existing admin button
+            const lockIcon = document.querySelector('.fa-lock');
+            if (lockIcon && lockIcon.parentElement) {
+                lockIcon.parentElement.addEventListener('click', openAdminModal);
+            }
+        }, 1000);
+    });
+
+    // Simple, reliable admin modal function
+    function openAdminModal() {
+        console.log('Admin button clicked!');
+        
+        // Remove any existing modal
+        const existingModal = document.getElementById('adminModal');
+        if (existingModal) {
+            existingModal.remove();
+        }
+        
+        // Create modal HTML
+        const modalHTML = `
+            <div id="adminModal" style="
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: rgba(0,0,0,0.9);
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                z-index: 9999;
+            ">
+                <div style="
+                    background: #1a1a1a;
+                    padding: 2rem;
+                    border-radius: 15px;
+                    border: 2px solid #FFD700;
+                    text-align: center;
+                    color: white;
+                    max-width: 400px;
+                    width: 90%;
+                ">
+                    <h2 style="color: #FFD700; margin-bottom: 1rem;">🔐 ÁREA RESTRITA</h2>
+                    <h3 style="margin-bottom: 1.5rem;">MONDADORI BARBERSHOP</h3>
+                    
+                    <input type="text" id="adminUser" placeholder="👤 Usuário" style="
+                        width: 100%;
+                        padding: 1rem;
+                        margin: 0.5rem 0;
+                        border: 1px solid #333;
+                        border-radius: 5px;
+                        background: #2a2a2a;
+                        color: white;
+                        font-size: 1rem;
+                        box-sizing: border-box;
+                    ">
+                    
+                    <input type="password" id="adminPass" placeholder="🔑 Senha" style="
+                        width: 100%;
+                        padding: 1rem;
+                        margin: 0.5rem 0;
+                        border: 1px solid #333;
+                        border-radius: 5px;
+                        background: #2a2a2a;
+                        color: white;
+                        font-size: 1rem;
+                        box-sizing: border-box;
+                    ">
+                    
+                    <button onclick="attemptLogin()" style="
+                        width: 100%;
+                        padding: 1rem;
+                        background: linear-gradient(45deg, #FFD700, #FFA500);
+                        border: none;
+                        border-radius: 5px;
+                        color: #000;
+                        font-weight: bold;
+                        font-size: 1rem;
+                        cursor: pointer;
+                        margin-top: 1rem;
+                    ">ENTRAR 🚀</button>
+                    
+                    <button onclick="closeAdminModal()" style="
+                        width: 100%;
+                        padding: 0.5rem;
+                        background: #666;
+                        border: none;
+                        border-radius: 5px;
+                        color: white;
+                        margin-top: 0.5rem;
+                        cursor: pointer;
+                    ">Fechar</button>
+                    
+                    <p style="margin-top: 1rem; font-size: 0.9rem; color: #ccc;">
+                        Acesso apenas autorizado
+                    </p>
+                </div>
+            </div>
+        `;
+        
+        // Add modal to page
+        document.body.insertAdjacentHTML('beforeend', modalHTML);
+        
+        // Focus on username field
+        setTimeout(() => {
+            document.getElementById('adminUser').focus();
+        }, 100);
+    }
+
+    function closeAdminModal() {
+        const modal = document.getElementById('adminModal');
+        if (modal) {
+            modal.remove();
+        }
+    }
+
+    function attemptLogin() {
+        const username = document.getElementById('adminUser').value;
+        const password = document.getElementById('adminPass').value;
+        
+        console.log('Login attempt:', username); // Debug
+        
+        if (username === 'diego' && password === 'mondadori2025') {
+            closeAdminModal();
+            openDashboard();
+        } else {
+            alert('❌ Credenciais incorretas. Use: diego / mondadori2025');
+        }
+    }
+
+    function openDashboard() {
+        console.log('Opening dashboard...');
+        
+        // Hide main website content
+        document.querySelector('body').style.overflow = 'hidden';
+        const mainContent = document.querySelector('main') || document.querySelector('.hero');
+        if (mainContent) {
+            mainContent.style.display = 'none';
+        }
+        
+        // Create dashboard
+        const dashboardHTML = `
+            <div id="adminDashboard" style="
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100vh;
+                background: #0f0f0f;
+                color: white;
+                z-index: 5000;
+                overflow-y: auto;
+                font-family: 'Segoe UI', sans-serif;
+            ">
+                <!-- Header -->
+                <div style="
+                    background: linear-gradient(135deg, #1a1a1a 0%, #000 100%);
+                    padding: 1rem 2rem;
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: center;
+                    border-bottom: 2px solid #FFD700;
+                    flex-wrap: wrap;
+                ">
+                    <h1 style="margin: 0; color: #FFD700; font-size: 1.5rem;">
+                        💈 DASHBOARD MONDADORI
+                    </h1>
+                    <div style="color: #ccc; font-size: 0.9rem;">
+                        ${new Date().toLocaleDateString('pt-BR', { 
+                            weekday: 'long', 
+                            day: 'numeric',
+                            month: 'long',
+                            year: 'numeric'
+                        })}
+                    </div>
+                    <button onclick="closeDashboard()" style="
+                        background: #dc3545;
+                        color: white;
+                        border: none;
+                        padding: 0.5rem 1rem;
+                        border-radius: 5px;
+                        cursor: pointer;
+                        font-size: 0.9rem;
+                    ">
+                        Sair
+                    </button>
+                </div>
+                
+                <!-- Stats Cards -->
+                <div style="
+                    display: grid;
+                    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+                    gap: 1rem;
+                    padding: 2rem;
+                ">
+                    <div style="
+                        background: linear-gradient(145deg, #2a2a2a, #1a1a1a);
+                        padding: 1.5rem;
+                        border-radius: 10px;
+                        border: 1px solid #FFD700;
+                        text-align: center;
+                    ">
+                        <h3 style="color: #FFD700; margin-bottom: 0.5rem;">💰 Faturamento Hoje</h3>
+                        <span style="font-size: 1.5rem; font-weight: bold;">R$ 0,00</span>
+                    </div>
+                    
+                    <div style="
+                        background: linear-gradient(145deg, #2a2a2a, #1a1a1a);
+                        padding: 1.5rem;
+                        border-radius: 10px;
+                        border: 1px solid #FFD700;
+                        text-align: center;
+                    ">
+                        <h3 style="color: #FFD700; margin-bottom: 0.5rem;">👥 Clientes Hoje</h3>
+                        <span style="font-size: 1.5rem; font-weight: bold;">0</span>
+                    </div>
+                    
+                    <div style="
+                        background: linear-gradient(145deg, #2a2a2a, #1a1a1a);
+                        padding: 1.5rem;
+                        border-radius: 10px;
+                        border: 1px solid #FFD700;
+                        text-align: center;
+                    ">
+                        <h3 style="color: #FFD700; margin-bottom: 0.5rem;">⏰ Próximo Cliente</h3>
+                        <span style="font-size: 1rem;">Nenhum agendamento</span>
+                    </div>
+                    
+                    <div style="
+                        background: linear-gradient(145deg, #2a2a2a, #1a1a1a);
+                        padding: 1.5rem;
+                        border-radius: 10px;
+                        border: 1px solid #FFD700;
+                        text-align: center;
+                    ">
+                        <h3 style="color: #FFD700; margin-bottom: 0.5rem;">📈 Taxa Confirmação</h3>
+                        <span style="font-size: 1.5rem; font-weight: bold;">100%</span>
+                    </div>
+                </div>
+                
+                <!-- Appointments Section -->
+                <div style="padding: 0 2rem 2rem;">
+                    <h2 style="color: #FFD700; margin-bottom: 1rem;">📅 AGENDAMENTOS DE HOJE</h2>
+                    <div id="appointmentsList" style="
+                        background: linear-gradient(145deg, #2a2a2a, #1a1a1a);
+                        border: 1px solid #333;
+                        border-radius: 10px;
+                        padding: 2rem;
+                        text-align: center;
+                    ">
+                        <p style="color: #ccc; margin: 0;">
+                            Nenhum agendamento encontrado para hoje.<br>
+                            Os agendamentos feitos pelo site aparecerão aqui automaticamente.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        `;
+        
+        document.body.insertAdjacentHTML('beforeend', dashboardHTML);
+        
+        // Load any existing appointments
+        loadAppointments();
+    }
+
+    function closeDashboard() {
+        const dashboard = document.getElementById('adminDashboard');
+        if (dashboard) {
+            dashboard.remove();
+        }
+        
+        // Show main content again
+        document.querySelector('body').style.overflow = 'auto';
+        const mainContent = document.querySelector('main') || document.querySelector('.hero');
+        if (mainContent) {
+            mainContent.style.display = 'block';
+        }
+    }
+
+    function loadAppointments() {
+        console.log('=== LOADING APPOINTMENTS FROM SHARED STORAGE ===');
+        
+        try {
+            // Get all appointments from shared storage
+            const allAppointments = getFromSharedStorage();
+            console.log('All appointments loaded:', allAppointments.length);
+        
+        // Get today's date in YYYY-MM-DD format
+        const today = new Date().toISOString().split('T')[0];
+        console.log('Today date for filtering:', today);
+            
+            // Filter today's appointments
+            const todayAppointments = allAppointments.filter(apt => {
+                console.log(`Comparing appointment date ${apt.date} with today ${today}`);
+                return apt.date === today;
+            });
+            
+            console.log('Today appointments found:', todayAppointments.length);
+            console.log('Today appointments:', todayAppointments);
+            
+            const appointmentsList = document.getElementById('appointmentsList');
+            if (!appointmentsList) {
+                console.error('appointmentsList element not found');
+                return;
+            }
+            
+            if (todayAppointments.length === 0) {
+                appointmentsList.innerHTML = `
+                    <div style="
+                        background: linear-gradient(145deg, #2a2a2a, #1a1a1a);
+                        border: 1px solid #333;
+                        border-radius: 10px;
+                        padding: 2rem;
+                        text-align: center;
+                        color: #ccc;
+                    ">
+                        <div style="font-size: 3rem; opacity: 0.5; margin-bottom: 1rem;">📅</div>
+                        <p style="margin: 0; font-size: 1.1rem;">
+                            Nenhum agendamento encontrado para hoje (${today}).<br>
+                            Total de agendamentos no sistema: ${allAppointments.length}<br>
+                            Os agendamentos feitos pelo site aparecerão aqui automaticamente.
+                        </p>
+                        <div style="margin-top: 1.5rem;">
+                            <button onclick="showAllAppointments()" style="
+                                background: #FFD700;
+                                color: #000;
+                                border: none;
+                                padding: 0.5rem 1rem;
+                                border-radius: 5px;
+                                cursor: pointer;
+                                margin: 0.25rem;
+                            ">Ver Todos os Agendamentos</button>
+                            
+                            <button onclick="debugAppointments()" style="
+                                background: #666;
+                                color: white;
+                                border: none;
+                                padding: 0.5rem 1rem;
+                                border-radius: 5px;
+                                cursor: pointer;
+                                margin: 0.25rem;
+                            ">Debug Local</button>
+                            
+                            <button onclick="testCloudSync()" style="
+                                background: #17a2b8;
+                                color: white;
+                                border: none;
+                                padding: 0.5rem 1rem;
+                                border-radius: 5px;
+                                cursor: pointer;
+                                margin: 0.25rem;
+                            ">Testar Cloud</button>
+                        </div>
+                    </div>
+                `;
+            } else {
+                appointmentsList.innerHTML = todayAppointments.map(apt => `
+                    <div class="appointment-card" style="
+                        background: linear-gradient(145deg, #1a1a1a, #2a2a2a);
+                        border: 2px solid #FFD700;
+                        border-radius: 15px;
+                        padding: 1.5rem;
+                        margin-bottom: 1.5rem;
+                        transition: all 0.3s ease;
+                    ">
+                        <div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 1rem;">
+                            <div style="flex: 1; min-width: 250px;">
+                                <div style="display: flex; align-items: center; margin-bottom: 0.5rem;">
+                                    <h3 style="color: #FFD700; margin: 0; font-size: 1.3rem;">
+                                        🕐 ${apt.time} - ${apt.customerName}
+                                    </h3>
+                                    <span style="
+                                        background: rgba(255, 215, 0, 0.2);
+                                        color: #FFD700;
+                                        padding: 0.2rem 0.5rem;
+                                        border-radius: 15px;
+                                        font-size: 0.7rem;
+                                        margin-left: 0.5rem;
+                                        text-transform: uppercase;
+                                        font-weight: bold;
+                                    ">${apt.status || 'NOVO'}</span>
+                                </div>
+                                
+                                <p style="margin: 0.3rem 0; color: white; font-size: 1rem;">✂️ ${apt.service}</p>
+                                <p style="margin: 0.3rem 0; color: white; font-size: 1rem;">📱 ${apt.phone}</p>
+                                ${apt.email ? `<p style="margin: 0.3rem 0; color: white; font-size: 1rem;">📧 ${apt.email}</p>` : ''}
+                                ${apt.notes ? `<p style="margin: 0.5rem 0 0 0; color: #ccc; font-style: italic; font-size: 0.9rem;">📝 "${apt.notes}"</p>` : ''}
+                                
+                                <p style="
+                                    margin: 0.5rem 0 0 0;
+                                    color: #666;
+                                    font-size: 0.8rem;
+                                ">
+                                    ID: ${apt.id} | Agendado em: ${new Date(apt.timestamp).toLocaleString('pt-BR')}
+                                </p>
+                            </div>
+                            
+                            <div style="
+                                display: flex;
+                                flex-direction: column;
+                                gap: 0.5rem;
+                                min-width: 140px;
+                            ">
+                                <button onclick="sendConfirmationWhatsApp('${apt.phone}', '${apt.customerName}', '${apt.service}', '${apt.time}', '${apt.date}')" style="
+                                    background: #25d366;
+                                    color: white;
+                                    border: none;
+                                    padding: 0.6rem 1rem;
+                                    border-radius: 8px;
+                                    cursor: pointer;
+                                    font-size: 0.9rem;
+                                    font-weight: 500;
+                                    transition: all 0.3s ease;
+                                    white-space: nowrap;
+                                ">
+                                    📱 Confirmar
+                                </button>
+                                
+                                <button onclick="markAsCompleted('${apt.id}')" style="
+                                    background: #32CD32;
+                                    color: white;
+                                    border: none;
+                                    padding: 0.6rem 1rem;
+                                    border-radius: 8px;
+                                    cursor: pointer;
+                                    font-size: 0.9rem;
+                                    font-weight: 500;
+                                    transition: all 0.3s ease;
+                                    white-space: nowrap;
+                                ">
+                                    ✅ Concluído
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                `).join('');
+                
+                // Update statistics
+                updateDashboardStats(todayAppointments);
+            }
+            
+        } catch (error) {
+            console.error('Error loading appointments:', error);
+            const appointmentsList = document.getElementById('appointmentsList');
+            if (appointmentsList) {
+                appointmentsList.innerHTML = `
+                    <div style="background: #dc3545; color: white; padding: 1rem; border-radius: 5px;">
+                        Erro ao carregar agendamentos: ${error.message}
+                    </div>
+                `;
+            }
+        }
+    }
+
+    // Debug functions
+    function showAllAppointments() {
+        const allAppointments = getFromSharedStorage();
+        
+        const appointmentsList = document.getElementById('appointmentsList');
+        appointmentsList.innerHTML = `
+            <div style="background: #1a1a1a; padding: 1rem; border-radius: 5px;">
+                <h3 style="color: #FFD700;">Todos os Agendamentos (${allAppointments.length})</h3>
+                <div style="max-height: 400px; overflow-y: auto;">
+                    ${allAppointments.map(apt => `
+                        <div style="border: 1px solid #333; padding: 0.5rem; margin: 0.5rem 0; border-radius: 3px;">
+                            <strong>${apt.customerName}</strong> - ${apt.date} às ${apt.time}<br>
+                            Serviço: ${apt.service}<br>
+                            Status: <span style="color: ${apt.status === 'novo' ? '#FFA500' : apt.status === 'confirmado' ? '#32CD32' : '#666'}">${apt.status}</span><br>
+                            <small>ID: ${apt.id} | ${new Date(apt.timestamp).toLocaleString('pt-BR')}</small>
+                        </div>
+                    `).join('')}
+                </div>
+                <div style="margin-top: 1rem;">
+                    <button onclick="loadAppointments()" style="
+                        background: #FFD700;
+                        color: #000;
+                        border: none;
+                        padding: 0.5rem 1rem;
+                        border-radius: 5px;
+                        cursor: pointer;
+                    ">Voltar para Hoje</button>
+                    
+                    <button onclick="exportData()" style="
+                        background: #007bff;
+                        color: white;
+                        border: none;
+                        padding: 0.5rem 1rem;
+                        border-radius: 5px;
+                        cursor: pointer;
+                        margin-left: 0.5rem;
+                    ">📥 Exportar</button>
+                </div>
+            </div>
+        `;
+    }
+
+    function debugAppointments() {
+        const stored = localStorage.getItem('barbershopAppointments');
+        const today = new Date().toISOString().split('T')[0];
+        
+        console.log('=== DEBUG INFO ===');
+        console.log('Today:', today);
+        console.log('Raw localStorage:', stored);
+        
+        if (stored) {
+            const appointments = JSON.parse(stored);
+            console.log('Parsed appointments:', appointments);
+            appointments.forEach((apt, index) => {
+                console.log(`Appointment ${index}:`, apt);
+            });
+        }
+        
+        alert(`Debug info logged to console.\n\nToday: ${today}\nTotal appointments: ${stored ? JSON.parse(stored).length : 0}\n\nCheck browser console (F12) for detailed logs.`);
+    }
+
+    async function testCloudSync() {
+        console.log('=== CLOUD SYNC TEST ===');
+        
+        try {
+            // Create test appointment
+            const testAppointment = {
+                id: `test_${Date.now()}`,
+                customerName: 'Teste Cloud Sync',
+                phone: '(41) 99999-9999',
+                email: 'teste@exemplo.com',
+                service: 'Corte + Barba',
+                date: new Date().toISOString().split('T')[0],
+                time: '14:00',
+                barber: 'Diego',
+                notes: 'Teste de sincronização na nuvem',
+                timestamp: new Date().toISOString(),
+                status: 'novo'
+            };
+            
+            console.log('Creating test appointment:', testAppointment);
+            
+            // Save to cloud
+            const saveResults = await saveAppointmentWithSync(testAppointment);
+            console.log('Save results:', saveResults);
+            
+            // Load from cloud
+            const cloudData = await loadFromSimpleCloud();
+            console.log('Cloud data loaded:', cloudData.length, 'appointments');
+            
+            // Check if our test appointment is there
+            const foundAppointment = cloudData.find(apt => apt.id === testAppointment.id);
+            
+            let message = '🧪 TESTE DE SINCRONIZAÇÃO NA NUVEM\\n\\n';
+            message += `✅ Salvamento Local: ${saveResults.localStorage ? 'OK' : 'FALHOU'}\\n`;
+            message += `✅ Salvamento Sessão: ${saveResults.sessionStorage ? 'OK' : 'FALHOU'}\\n`;
+            message += `✅ Salvamento Nuvem: ${saveResults.cloud ? 'OK' : 'FALHOU'}\\n`;
+            message += `✅ Recuperação Nuvem: ${foundAppointment ? 'OK' : 'FALHOU'}\\n\\n`;
+            message += `📊 Total na Nuvem: ${cloudData.length} agendamentos\\n`;
+            message += `📋 ID Teste: ${testAppointment.id}\\n\\n`;
+            message += 'Verifique o console (F12) para logs detalhados.';
+            
+            alert(message);
+            
+            // Reload appointments to show the test appointment
+            await loadAppointments();
+            
+        } catch (error) {
+            console.error('Cloud sync test failed:', error);
+            alert(`❌ Erro no teste de sincronização:\\n${error.message}\\n\\nVerifique o console para detalhes.`);
+        }
+    }
+
+    function sendConfirmationWhatsApp(phone, name, service, time, date) {
+        const dateFormatted = new Date(date).toLocaleDateString('pt-BR');
+        const message = `Oi ${name}! 👋
+
+Você tem agendamento ${dateFormatted} às ${time} na Mondadori Barbershop:
+✂️ Serviço: ${service}
+📍 Rua Marechal Hermes, 2055, Curitiba
+
+Confirma sua presença? 🤔
+
+✅ SIM - Estarei lá!
+❌ NÃO - Preciso reagendar`;
+
+        const whatsappUrl = `https://wa.me/55${phone.replace(/\D/g, '')}?text=${encodeURIComponent(message)}`;
+        window.open(whatsappUrl, '_blank');
+    }
+
+    function sendReminderWhatsApp(phone, name, time) {
+        const message = `📅 LEMBRETE - Mondadori Barbershop
+
+Oi ${name}! Seu horário é HOJE às ${time}!
+Não esqueça! 😉💈
+📍 Rua Marechal Hermes, 2055
+
+Nos vemos lá! 🔥`;
+
+        const whatsappUrl = `https://wa.me/55${phone.replace(/\D/g, '')}?text=${encodeURIComponent(message)}`;
+        window.open(whatsappUrl, '_blank');
+    }
+
+    function markAsCompleted(appointmentId) {
+        updateAppointmentStatus(appointmentId, 'concluido');
+    }
+    
+    // New helper functions for appointment management
+    function refreshAppointments() {
+        loadAppointments();
+    }
+
+    function markAsConfirmed(appointmentId) {
+        updateAppointmentStatus(appointmentId, 'confirmado');
+    }
+
+    function updateAppointmentStatus(appointmentId, newStatus) {
+        try {
+            const appointments = getFromSharedStorage();
+            const updatedAppointments = appointments.map(apt => {
+                if (apt.id === appointmentId) {
+                    apt.status = newStatus;
+                    apt.updatedAt = new Date().toISOString();
+                    if (newStatus === 'concluido') {
+                        apt.completedAt = new Date().toISOString();
+                    }
+                }
+                return apt;
+            });
+            
+            // Save updated appointments
+            const storageData = {
+                appointments: updatedAppointments,
+                lastUpdated: new Date().toISOString(),
+                version: '1.0',
+                totalCount: updatedAppointments.length
+            };
+            
+            localStorage.setItem(SHARED_STORAGE_KEY, JSON.stringify(storageData));
+            
+            loadAppointments(); // Reload the list
+            
+        } catch (error) {
+            console.error('Error updating appointment status:', error);
+            alert('Erro ao atualizar status. Tente novamente.');
+        }
+    }
+
+    function clearAllData() {
+        if (confirm('⚠️ ATENÇÃO: Isso apagará TODOS os agendamentos.\\n\\nTem certeza que deseja continuar?')) {
+            localStorage.removeItem(SHARED_STORAGE_KEY);
+            loadAppointments();
+            alert('Todos os dados foram removidos.');
+        }
+    }
+
+    function exportData() {
+        try {
+            const data = getFromSharedStorage();
+            const dataStr = JSON.stringify(data, null, 2);
+            const dataBlob = new Blob([dataStr], {type: 'application/json'});
+            const url = URL.createObjectURL(dataBlob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = `mondadori-agendamentos-${new Date().toISOString().split('T')[0]}.json`;
+            link.click();
+            URL.revokeObjectURL(url);
+        } catch (error) {
+            console.error('Error exporting data:', error);
+            alert('Erro ao exportar dados.');
+        }
+    }
+
+    function updateDashboardStats(appointments) {
+        // Calculate basic statistics
+        const totalAppointments = appointments.length;
+        const completedAppointments = appointments.filter(apt => apt.status === 'concluido').length;
+        
+        // Calculate estimated revenue based on common services
+        let totalRevenue = 0;
+        appointments.forEach(apt => {
+            const service = apt.service.toLowerCase();
+            if (service.includes('corte') && service.includes('barba')) {
+                totalRevenue += 80; // Corte + Barba
+            } else if (service.includes('corte')) {
+                totalRevenue += 40;
+            } else if (service.includes('barba')) {
+                totalRevenue += 40;
+            } else if (service.includes('platinado')) {
+                totalRevenue += 250;
+            } else if (service.includes('luzes')) {
+                totalRevenue += 200;
+            } else if (service.includes('selagem')) {
+                totalRevenue += 90;
+            } else {
+                totalRevenue += 40; // Default service price
+            }
+        });
+        
+        // Update stats display
+        const amountElement = document.querySelector('.amount');
+        const countElement = document.querySelector('.count');
+        const rateElement = document.querySelector('.rate');
+        const nextClientElement = document.querySelector('.next-client');
+        
+        if (amountElement) {
+            amountElement.textContent = `R$ ${totalRevenue.toFixed(2).replace('.', ',')}`;
+        }
+        
+        if (countElement) {
+            countElement.textContent = totalAppointments;
+        }
+        
+        if (rateElement) {
+            const rate = totalAppointments > 0 ? Math.round((completedAppointments / totalAppointments) * 100) : 100;
+            rateElement.textContent = `${rate}%`;
+        }
+        
+        if (nextClientElement) {
+            const now = new Date();
+            const currentTime = now.getHours() * 100 + now.getMinutes(); // Convert to HHMM format
+            
+            const upcomingAppointments = appointments
+                .filter(apt => {
+                    const aptTime = parseInt(apt.time.replace(':', ''));
+                    return aptTime > currentTime && apt.status !== 'concluido';
+                })
+                .sort((a, b) => a.time.localeCompare(b.time));
+            
+            if (upcomingAppointments.length > 0) {
+                const next = upcomingAppointments[0];
+                nextClientElement.textContent = `${next.time} - ${next.customerName}`;
+            } else {
+                nextClientElement.textContent = 'Nenhum agendamento';
+            }
+        }
+        
+        console.log('Dashboard stats updated:', {
+            appointments: totalAppointments,
+            revenue: totalRevenue,
+            completed: completedAppointments
+        });
+    }
+
+    function sendWhatsApp(phone, name, service, time) {
+        const message = `Oi ${name}! 👋\n\nVocê tem agendamento hoje às ${time} na Mondadori Barbershop:\n✂️ Serviço: ${service}\n📍 Rua Marechal Hermes, 2055\n\nConfirma sua presença? 🤔\n\n✅ SIM - Estarei lá!\n❌ NÃO - Preciso reagendar`;
+        const whatsappUrl = `https://wa.me/55${phone.replace(/\D/g, '')}?text=${encodeURIComponent(message)}`;
+        window.open(whatsappUrl, '_blank');
+    }
+
+    // Enhanced booking form integration
+    document.addEventListener('DOMContentLoaded', function() {
+        const bookingForm = document.getElementById('booking-form');
+        if (bookingForm) {
+            bookingForm.addEventListener('submit', function(e) {
+                // Let the existing WhatsApp functionality work
+                setTimeout(() => {
+                    const formData = new FormData(this);
+                    const appointmentData = {
+                        id: Date.now().toString(),
+                        customerName: formData.get('name'),
+                        phone: formData.get('phone'),
+                        email: formData.get('email') || '',
+                        service: formData.get('service'),
+                        date: formData.get('date'),
+                        time: formData.get('time'),
+                        notes: formData.get('observations') || '',
+                        status: 'novo',
+                        timestamp: new Date().toISOString()
+                    };
+                    
+                    // Save to localStorage
+                    const appointments = JSON.parse(localStorage.getItem('barbershopAppointments') || '[]');
+                    appointments.push(appointmentData);
+                    localStorage.setItem('barbershopAppointments', JSON.stringify(appointments));
+                    
+                    console.log('Appointment saved to dashboard:', appointmentData);
+                }, 100);
+            });
+        }
+    });
+
+    console.log('Admin script loaded successfully');
+    </script>
+
+    <!-- Admin Login Modal -->
+    <div class="admin-login-modal" id="admin-login-modal">
+        <div class="login-container">
+            <button class="login-close" id="login-close">&times;</button>
+            <h2>🔐 ÁREA RESTRITA</h2>
+            <h3>MONDADORI BARBERSHOP</h3>
+            <form id="admin-login-form">
+                <input type="text" id="admin-username" placeholder="👤 Usuário" required>
+                <input type="password" id="admin-password" placeholder="🔑 Senha" required>
+                <button type="submit">ENTRAR 🚀</button>
+            </form>
+            <p style="opacity: 0.8; font-size: 0.9rem; margin-top: 1rem;">Acesso apenas autorizado</p>
+        </div>
+    </div>
+
+    <!-- Admin Dashboard -->
+    <div class="admin-dashboard" id="admin-dashboard">
+        <header class="dashboard-header">
+            <h1>💈 DASHBOARD MONDADORI</h1>
+            <div class="date-info" id="current-date"></div>
+            <button class="logout-btn" id="logout-btn">Sair</button>
+        </header>
+        
+        <div class="nav-tabs">
+            <button class="nav-tab active" onclick="showDashboardTab('main')">📊 Principal</button>
+            <button class="nav-tab" onclick="showDashboardTab('settings')">⚙️ Configurações</button>
+        </div>
+        
+        <div id="dashboard-main" class="dashboard-tab-content">
+            <div class="dashboard-stats">
+                <div class="stat-card">
+                    <h3>💰 Faturamento Hoje</h3>
+                    <span class="amount" id="daily-revenue">R$ 0,00</span>
+                </div>
+                <div class="stat-card">
+                    <h3>👥 Clientes Hoje</h3>
+                    <span class="count" id="daily-clients">0</span>
+                </div>
+                <div class="stat-card">
+                    <h3>⏰ Próximo Cliente</h3>
+                    <span class="next-client" id="next-appointment">Nenhum agendamento</span>
+                </div>
+                <div class="stat-card">
+                    <h3>📈 Taxa Confirmação</h3>
+                    <span class="rate" id="confirmation-rate">100%</span>
+                </div>
+            </div>
+            
+            <div class="dashboard-content">
+                <div class="appointments-section">
+                    <h2>📅 AGENDAMENTOS DE HOJE</h2>
+                    <div id="appointments-list">
+                        <div class="no-appointments" id="no-appointments">
+                            <i class="fas fa-calendar-times" style="font-size: 3rem; opacity: 0.5; margin-bottom: 1rem;"></i>
+                            <br>
+                            Nenhum agendamento para hoje
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="weekly-view">
+                    <h2>📊 ESTATÍSTICAS SEMANAIS</h2>
+                    <div class="weekly-stats" id="weekly-stats">
+                        <div class="weekly-stat-item">
+                            <h4>💰 Receita Semanal</h4>
+                            <span id="weekly-revenue">R$ 0,00</span>
+                        </div>
+                        <div class="weekly-stat-item">
+                            <h4>👥 Total Clientes</h4>
+                            <span id="weekly-clients">0</span>
+                        </div>
+                        <div class="weekly-stat-item">
+                            <h4>✅ Taxa Confirmação</h4>
+                            <span id="weekly-confirmation">100%</span>
+                        </div>
+                        <div class="weekly-stat-item">
+                            <h4>⭐ Serviço Popular</h4>
+                            <span id="popular-service">Corte + Barba</span>
+                        </div>
+                        <div class="weekly-stat-item">
+                            <h4>🕐 Horário Pico</h4>
+                            <span id="peak-hour">14:00 - 16:00</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div id="dashboard-settings" class="settings-panel">
+            <h2>⚙️ CONFIGURAÇÕES</h2>
+            
+            <div class="settings-section">
+                <h3>🔐 Alterar Credenciais</h3>
+                <input type="text" id="new-username" placeholder="Novo usuário">
+                <input type="password" id="new-password" placeholder="Nova senha">
+                <input type="password" id="confirm-password" placeholder="Confirmar nova senha">
+                <button onclick="updateCredentials()">SALVAR CREDENCIAIS</button>
+            </div>
+            
+            <div class="settings-section">
+                <h3>📱 Templates WhatsApp</h3>
+                <label>Mensagem de Confirmação:</label>
+                <textarea id="confirmation-template" rows="4" placeholder="Template de confirmação...">Oi {name}! 😃
+
+Você tem agendamento {date} às {time} na Mondadori Barbershop:
+✂️ Serviço: {service}
+💰 Valor: {price}
+📍 Rua Marechal Hermes, 2055
+
+Confirma sua presença? 🤔
+
+✅ SIM - Estarei lá!
+❌ NÃO - Preciso reagendar</textarea>
+                
+                <label>Mensagem de Lembrete:</label>
+                <textarea id="reminder-template" rows="3" placeholder="Template de lembrete...">📅 LEMBRETE - Mondadori Barbershop
+
+Oi {name}! Seu horário é HOJE às {time}!
+Não esqueça! 😉💈
+Nos vemos lá! 🔥</textarea>
+                
+                <label>Mensagem de Reagendamento:</label>
+                <textarea id="reschedule-template" rows="4" placeholder="Template de reagendamento...">Oi {name}!
+
+Precisamos reagendar seu horário de hoje às {time}.
+
+Quando você gostaria de remarcar?
+- Amanhã às {time}?
+- Outro dia?
+- Outro horário?
+
+Me responde quando puder! 👍</textarea>
+                
+                <button onclick="saveTemplates()">SALVAR TEMPLATES</button>
+            </div>
+            
+            <div class="settings-section">
+                <h3>⏰ Horários de Funcionamento</h3>
+                <label>Horário de Início:</label>
+                <input type="time" id="start-time" value="10:00">
+                <label>Horário de Término:</label>
+                <input type="time" id="end-time" value="20:00">
+                <button onclick="updateBusinessHours()">SALVAR HORÁRIOS</button>
+            </div>
+            
+            <div class="settings-section">
+                <h3>🗑️ Gerenciamento de Dados</h3>
+                <button onclick="exportData()" style="background: linear-gradient(45deg, #28a745, #20c997);">📄 EXPORTAR DADOS</button>
+                <button onclick="clearAllData()" style="background: linear-gradient(45deg, #dc3545, #c82333); margin-left: 1rem;">🗑️ LIMPAR TODOS OS DADOS</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Success Message -->
+    <div class="success-message" id="success-message"></div>
+
+    <script>
+        // Mobile menu toggle
+        const mobileToggle = document.getElementById('mobile-toggle');
+        const navMenu = document.getElementById('nav-menu');
+        
+        mobileToggle.addEventListener('click', () => {
+            navMenu.classList.toggle('active');
+        });
+
+        // Close mobile menu when clicking on a link
+        document.querySelectorAll('.nav-link').forEach(link => {
+            link.addEventListener('click', () => {
+                navMenu.classList.remove('active');
+            });
+        });
+
+        // Header scroll effect
+        window.addEventListener('scroll', () => {
+            const header = document.getElementById('header');
+            if (window.scrollY > 100) {
+                header.classList.add('scrolled');
+            } else {
+                header.classList.remove('scrolled');
+            }
+        });
+
+        // Generate time slots - Enhanced version
+        function generateTimeSlots() {
+            const dateInput = document.getElementById('date');
+            const timeSelect = document.getElementById('time');
+            
+            if (!timeSelect) return;
+            
+            // Clear existing options first
+            timeSelect.innerHTML = '';
+            
+            // Check if a date is selected
+            if (!dateInput || !dateInput.value) {
+                timeSelect.innerHTML = '<option value="">Selecione uma data primeiro</option>';
+                return;
+            }
+            
+            const selectedDate = new Date(dateInput.value);
+            const today = new Date();
+            const dayOfWeek = selectedDate.getDay(); // 0=Sunday, 1=Monday, etc.
+            
+            // Check if date is in the past
+            if (selectedDate < today.setHours(0,0,0,0)) {
+                timeSelect.innerHTML = '<option value="">Data deve ser futura</option>';
+                return;
+            }
+            
+            // Check if it's Sunday (0) or Monday (1) - closed days
+            if (dayOfWeek === 0 || dayOfWeek === 1) {
+                timeSelect.innerHTML = '<option value="">Fechado aos domingos e segundas</option>';
+                return;
+            }
+            
+            // Add default option
+            timeSelect.innerHTML = '<option value="">Selecione um horário</option>';
+            
+            // Generate time slots for Tuesday to Saturday (10:00 to 20:00)
+            const startHour = 10;
+            const endHour = 20;
+            
+            for (let hour = startHour; hour < endHour; hour++) {
+                // Add :00 slot
+                const time00 = String(hour).padStart(2, '0') + ':00';
+                const option00 = document.createElement('option');
+                option00.value = time00;
+                option00.textContent = time00;
+                timeSelect.appendChild(option00);
+                
+                // Add :30 slot
+                const time30 = String(hour).padStart(2, '0') + ':30';
+                const option30 = document.createElement('option');
+                option30.value = time30;
+                option30.textContent = time30;
+                timeSelect.appendChild(option30);
+            }
+            
+            console.log('Time slots generated for:', dateInput.value);
+        }
+
+        // Initialize time slots on page load
+        function initializeTimeSlots() {
+            const timeSelect = document.getElementById('time');
+            if (timeSelect) {
+                // Set initial state - no slots until date is selected
+                timeSelect.innerHTML = '<option value="">Selecione uma data primeiro</option>';
+            }
+        }
+
+        // Fallback function to populate all time slots (if needed)
+        function populateAllTimeSlots() {
+            const timeSelect = document.getElementById('time');
+            if (!timeSelect) return;
+            
+            const timeSlots = [
+                '10:00', '10:30', '11:00', '11:30', 
+                '12:00', '12:30', '13:00', '13:30',
+                '14:00', '14:30', '15:00', '15:30',
+                '16:00', '16:30', '17:00', '17:30',
+                '18:00', '18:30', '19:00', '19:30'
+            ];
+            
+            // Clear existing options
+            timeSelect.innerHTML = '<option value="">Selecione um horário</option>';
+            
+            // Add all time slots
+            timeSlots.forEach(time => {
+                const option = document.createElement('option');
+                option.value = time;
+                option.textContent = time;
+                timeSelect.appendChild(option);
+            });
+            
+            console.log('All time slots populated as fallback');
+        }
+
+        // Date validation
+        function setupDateValidation() {
+            const dateInput = document.getElementById('date');
+            const today = new Date();
+            const tomorrow = new Date(today);
+            tomorrow.setDate(tomorrow.getDate() + 1);
+            
+            // Set minimum date to tomorrow
+            dateInput.min = tomorrow.toISOString().split('T')[0];
+            
+            // Handle date changes - validate and generate time slots
+            dateInput.addEventListener('change', function() {
+                const selectedDate = new Date(this.value);
+                const dayOfWeek = selectedDate.getDay();
+                
+                if (dayOfWeek === 0 || dayOfWeek === 1) { // Sunday or Monday
+                    alert('Não funcionamos aos domingos e segundas-feiras. Por favor, escolha outro dia.');
+                    this.value = '';
+                    // Clear time slots when date is invalid
+                    const timeSelect = document.getElementById('time');
+                    if (timeSelect) {
+                        timeSelect.innerHTML = '<option value="">Selecione uma data válida primeiro</option>';
+                    }
+                } else {
+                    // Generate time slots for valid dates
+                    generateTimeSlots();
+                }
+            });
+        }
+
+        // Phone mask
+        function setupPhoneMask() {
+            const phoneInput = document.getElementById('phone');
+            
+            phoneInput.addEventListener('input', function() {
+                let value = this.value.replace(/\D/g, '');
+                
+                if (value.length >= 11) {
+                    value = value.replace(/(\d{2})(\d{5})(\d{4})/, '($1) $2-$3');
+                } else if (value.length >= 7) {
+                    value = value.replace(/(\d{2})(\d{4})(\d+)/, '($1) $2-$3');
+                } else if (value.length >= 3) {
+                    value = value.replace(/(\d{2})(\d+)/, '($1) $2');
+                }
+                
+                this.value = value;
+            });
+        }
+
+        // Form submission
+        function setupFormSubmission() {
+            const form = document.getElementById('booking-form');
+            
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                const formData = new FormData(form);
+                const data = Object.fromEntries(formData);
+                
+                // Validate required fields
+                if (!data.name || !data.phone || !data.service || !data.date || !data.time) {
+                    alert('Por favor, preencha todos os campos obrigatórios.');
+                    return;
+                }
+
+                // Save appointment to admin system
+                const appointmentData = {
+                    id: generateUniqueId(),
+                    customerName: data.name,
+                    phone: data.phone.replace(/\D/g, ''),
+                    email: data.email || '',
+                    service: data.service,
+                    price: extractPriceFromService(data.service),
+                    date: data.date,
+                    time: data.time,
+                    notes: data.observations || '',
+                    status: 'novo',
+                    timestamp: new Date().toISOString(),
+                    barber: data.barber || 'Diego'
+                };
+                
+                saveAppointmentToStorage(appointmentData);
+                
+                // Format WhatsApp message
+                const message = `🔸 *NOVO AGENDAMENTO - MONDADORI BARBERSHOP* 🔸
+
+📋 *Dados do Cliente:*
+- Nome: ${data.name}
+- WhatsApp: ${data.phone}
+- Email: ${data.email || 'Não informado'}
+
+💼 *Serviço Solicitado:*
+- ${data.service}
+
+📅 *Data e Horário:*
+- Data: ${new Date(data.date).toLocaleDateString('pt-BR')}
+- Horário: ${data.time}
+- Barbeiro: ${data.barber}
+
+📝 *Observações:*
+${data.observations || 'Nenhuma observação especial'}
+
+Aguardo confirmação do agendamento! 💈`;
+
+                // Encode message for WhatsApp URL
+                const encodedMessage = encodeURIComponent(message);
+                const whatsappURL = `https://wa.me/5541984325356?text=${encodedMessage}`;
+                
+                // Open WhatsApp
+                window.open(whatsappURL, '_blank');
+                
+                // Show success message
+                showSuccessModal();
+                
+                // Reset form after a short delay
+                setTimeout(() => {
+                    form.reset();
+                }, 1000);
+            });
+        }
+
+        function extractPriceFromService(serviceString) {
+            const priceMatch = serviceString.match(/R\$\s*(\d+(?:,\d{2})?)/); 
+            if (priceMatch) {
+                return parseFloat(priceMatch[1].replace(',', '.'));
+            }
+            return 0;
+        }
+
+        function saveAppointmentToStorage(appointmentData) {
+            try {
+                const appointments = JSON.parse(localStorage.getItem('barbershopAppointments') || '[]');
+                appointments.push(appointmentData);
+                localStorage.setItem('barbershopAppointments', JSON.stringify(appointments));
+                console.log('Appointment saved to dashboard:', appointmentData);
+            } catch (error) {
+                console.error('Error saving appointment:', error);
+            }
+        }
+
+        function showSuccessModal() {
+            // Remove existing modal if any
+            const existingModal = document.getElementById('successModal');
+            if (existingModal) {
+                existingModal.remove();
+            }
+            
+            // Create success modal
+            const modalHTML = `
+                <div id="successModal" style="
+                    position: fixed;
+                    top: 0;
+                    left: 0;
+                    width: 100%;
+                    height: 100%;
+                    background: rgba(0,0,0,0.9);
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                    z-index: 9999;
+                    animation: fadeIn 0.3s ease;
+                ">
+                    <div style="
+                        background: linear-gradient(145deg, #1a1a1a, #2a2a2a);
+                        padding: 2.5rem;
+                        border-radius: 20px;
+                        border: 3px solid #FFD700;
+                        text-align: center;
+                        color: white;
+                        max-width: 450px;
+                        width: 90%;
+                        box-shadow: 0 20px 60px rgba(255, 215, 0, 0.3);
+                    ">
+                        <div style="
+                            font-size: 3rem;
+                            margin-bottom: 1rem;
+                        ">✅</div>
+                        
+                        <h2 style="
+                            color: #FFD700;
+                            margin-bottom: 1rem;
+                            font-size: 1.5rem;
+                        ">
+                            Agendamento Enviado!
+                        </h2>
+                        
+                        <p style="
+                            margin-bottom: 1.5rem;
+                            line-height: 1.6;
+                            font-size: 1rem;
+                        ">
+                            Seu agendamento foi enviado via WhatsApp para o Diego.<br>
+                            Aguarde a confirmação do seu horário!
+                        </p>
+                        
+                        <div style="
+                            background: rgba(255, 215, 0, 0.1);
+                            padding: 1rem;
+                            border-radius: 10px;
+                            margin-bottom: 1.5rem;
+                            border-left: 4px solid #FFD700;
+                        ">
+                            <p style="
+                                margin: 0;
+                                font-size: 0.9rem;
+                                color: #ccc;
+                            ">
+                                📱 Se o WhatsApp não abrir automaticamente,<br>
+                                entre em contato: <strong style="color: #FFD700;">(41) 98432-5356</strong>
+                            </p>
+                        </div>
+                        
+                        <button onclick="closeSuccessModal()" style="
+                            background: linear-gradient(45deg, #FFD700, #FFA500);
+                            border: none;
+                            padding: 1rem 2rem;
+                            border-radius: 10px;
+                            color: #000;
+                            font-weight: bold;
+                            cursor: pointer;
+                            font-size: 1rem;
+                            transition: all 0.3s ease;
+                        " onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform='none'">
+                            Entendi!
+                        </button>
+                    </div>
+                </div>
+            `;
+            
+            document.body.insertAdjacentHTML('beforeend', modalHTML);
+            
+            // Auto close after 8 seconds
+            setTimeout(closeSuccessModal, 8000);
+        }
+
+        function closeSuccessModal() {
+            const modal = document.getElementById('successModal');
+            if (modal) {
+                modal.style.animation = 'fadeOut 0.3s ease';
+                setTimeout(() => modal.remove(), 300);
+            }
+        }
+
+        // Add fade animations to CSS
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes fadeIn {
+                from { opacity: 0; }
+                to { opacity: 1; }
+            }
+            @keyframes fadeOut {
+                from { opacity: 1; }
+                to { opacity: 0; }
+            }
+        `;
+        document.head.appendChild(style);
+
+        // Click outside modal to close
+        document.addEventListener('click', function(e) {
+            if (e.target === document.getElementById('admin-login-modal')) {
+                closeAdminLogin();
+            }
+        });
+
+        // Test admin button functionality
+        function testAdminButton() {
+            console.log('Testing admin button...');
+            const btn = document.getElementById('admin-access-btn');
+            if (btn) {
+                console.log('Admin button found:', btn);
+                console.log('Button onclick:', btn.onclick);
+            } else {
+                console.error('Admin button not found!');
+            }
+        }
+
+        // Add test to DOM ready
+        setTimeout(testAdminButton, 1000);
+            });
+        }
+
+        // Smooth scrolling
+        function setupSmoothScrolling() {
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    const target = document.querySelector(this.getAttribute('href'));
+                    if (target) {
+                        target.scrollIntoView({
+                            behavior: 'smooth',
+                            block: 'start'
+                        });
+                    }
+                });
+            });
+        }
+
+        // Initialize everything when DOM is loaded
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeTimeSlots();
+            setupDateValidation();
+            setupPhoneMask();
+            setupFormSubmission();
+            setupSmoothScrolling();
+            initializeAdminSystem();
+        });
+
+        // Admin System Functions
+        function initializeAdminSystem() {
+            // Initialize default settings if not exists
+            if (!localStorage.getItem('mondadori_admin_settings')) {
+                const defaultSettings = {
+                    username: 'diego',
+                    password: 'mondadori2025',
+                    businessHours: {
+                        start: '10:00',
+                        end: '20:00',
+                        days: ['tuesday', 'wednesday', 'thursday', 'friday', 'saturday']
+                    },
+                    templates: {
+                        confirmation: `Oi {name}! 😃\n\nVocê tem agendamento {date} às {time} na Mondadori Barbershop:\n✂️ Serviço: {service}\n💰 Valor: {price}\n📍 Rua Marechal Hermes, 2055\n\nConfirma sua presença? 🤔\n\n✅ SIM - Estarei lá!\n❌ NÃO - Preciso reagendar`,
+                        reminder: `📅 LEMBRETE - Mondadori Barbershop\n\nOi {name}! Seu horário é HOJE às {time}!\nNão esqueça! 😉💈\nNos vemos lá! 🔥`,
+                        reschedule: `Oi {name}!\n\nPrecisamos reagendar seu horário de hoje às {time}.\n\nQuando você gostaria de remarcar?\n- Amanhã às {time}?\n- Outro dia?\n- Outro horário?\n\nMe responde quando puder! 👍`
+                    }
+                };
+                localStorage.setItem('mondadori_admin_settings', JSON.stringify(defaultSettings));
+            }
+
+            // Initialize appointments array if not exists
+            if (!localStorage.getItem('mondadori_appointments')) {
+                localStorage.setItem('mondadori_appointments', JSON.stringify([]));
+            }
+
+            // Setup admin modal event listeners
+            const loginCloseBtn = document.getElementById('login-close');
+            const adminLoginForm = document.getElementById('admin-login-form');
+            const logoutBtn = document.getElementById('logout-btn');
+            
+            if (loginCloseBtn) loginCloseBtn.addEventListener('click', closeAdminLogin);
+            if (adminLoginForm) adminLoginForm.addEventListener('submit', handleAdminLogin);
+            if (logoutBtn) logoutBtn.addEventListener('click', handleLogout);
+            
+            // Update current date
+            updateCurrentDate();
+        }
+
+        // Fixed Admin Login Functions
+        function openAdminLogin() {
+            console.log('Admin login button clicked');
+            const modal = document.getElementById('admin-login-modal');
+            if (modal) {
+                modal.classList.add('active');
+                // Focus on username field
+                setTimeout(() => {
+                    const usernameField = document.getElementById('admin-username');
+                    if (usernameField) {
+                        usernameField.focus();
+                    }
+                }, 100);
+            } else {
+                console.error('Login modal not found');
+            }
+        }
+
+        function closeAdminLogin() {
+            const modal = document.getElementById('admin-login-modal');
+            if (modal) {
+                modal.classList.remove('active');
+                // Reset form
+                const form = document.getElementById('admin-login-form');
+                if (form) {
+                    form.reset();
+                }
+            }
+        }
+
+        function handleAdminLogin(event) {
+            event.preventDefault();
+            
+            const username = document.getElementById('admin-username').value.trim();
+            const password = document.getElementById('admin-password').value.trim();
+            
+            console.log('Login attempt:', username);
+            
+            if (authenticateUser(username, password)) {
+                console.log('Login successful');
+                closeAdminLogin();
+                showDashboard();
+            } else {
+                console.log('Login failed');
+                showMessage('❌ Credenciais incorretas! Use diego/mondadori2025', 'error');
+                // Clear password field but keep username
+                document.getElementById('admin-password').value = '';
+                document.getElementById('admin-password').focus();
+            }
+        }
+
+        function authenticateUser(username, password) {
+            const settings = JSON.parse(localStorage.getItem('mondadori_admin_settings'));
+            return username === settings.username && password === settings.password;
+        }
+
+        function showDashboard() {
+            // Hide main website
+            document.querySelector('.header').style.display = 'none';
+            document.querySelector('.hero').style.display = 'none';
+            document.querySelectorAll('.section').forEach(section => section.style.display = 'none');
+            document.querySelector('.booking').style.display = 'none';
+            document.querySelector('.footer').style.display = 'none';
+            document.querySelector('.whatsapp-float').style.display = 'none';
+            const adminBtn = document.getElementById('admin-access-btn');
+            if (adminBtn) adminBtn.style.display = 'none';
+            
+            // Show dashboard
+            document.getElementById('admin-dashboard').classList.add('active');
+            
+            // Load dashboard data
+            loadDashboardData();
+        }
+
+        function handleLogout() {
+            // Show main website
+            document.querySelector('.header').style.display = 'block';
+            document.querySelector('.hero').style.display = 'flex';
+            document.querySelectorAll('.section').forEach(section => section.style.display = 'block');
+            document.querySelector('.booking').style.display = 'block';
+            document.querySelector('.footer').style.display = 'block';
+            document.querySelector('.whatsapp-float').style.display = 'flex';
+            const adminBtn = document.getElementById('admin-access-btn');
+            if (adminBtn) adminBtn.style.display = 'flex';
+            
+            // Hide dashboard
+            document.getElementById('admin-dashboard').classList.remove('active');
+        }
+
+        function showDashboardTab(tab) {
+            // Remove active class from all tabs
+            document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.dashboard-tab-content, .settings-panel').forEach(content => {
+                content.style.display = 'none';
+                content.classList.remove('active');
+            });
+            
+            // Show selected tab
+            if (tab === 'main') {
+                document.querySelector('.nav-tab').classList.add('active');
+                document.getElementById('dashboard-main').style.display = 'block';
+                loadDashboardData();
+            } else if (tab === 'settings') {
+                document.querySelectorAll('.nav-tab')[1].classList.add('active');
+                document.getElementById('dashboard-settings').classList.add('active');
+                loadSettingsData();
+            }
+        }
+
+        function loadDashboardData() {
+            const appointments = JSON.parse(localStorage.getItem('mondadori_appointments')) || [];
+            const today = new Date().toISOString().split('T')[0];
+            const todayAppointments = appointments.filter(apt => apt.date === today);
+            
+            // Update statistics
+            updateDailyStats(todayAppointments);
+            updateWeeklyStats(appointments);
+            
+            // Display appointments
+            displayTodayAppointments(todayAppointments);
+        }
+
+        function updateDailyStats(todayAppointments) {
+            const revenue = todayAppointments.reduce((total, apt) => total + (apt.price || 0), 0);
+            const clientCount = todayAppointments.length;
+            const confirmedCount = todayAppointments.filter(apt => apt.status === 'confirmado').length;
+            const confirmationRate = clientCount > 0 ? Math.round((confirmedCount / clientCount) * 100) : 100;
+            
+            document.getElementById('daily-revenue').textContent = `R$ ${revenue.toFixed(2).replace('.', ',')}`;
+            document.getElementById('daily-clients').textContent = clientCount;
+            document.getElementById('confirmation-rate').textContent = `${confirmationRate}%`;
+            
+            // Find next appointment
+            const now = new Date();
+            const upcomingAppointments = todayAppointments
+                .filter(apt => {
+                    const aptTime = new Date(`${apt.date}T${apt.time}:00`);
+                    return aptTime > now;
+                })
+                .sort((a, b) => a.time.localeCompare(b.time));
+            
+            const nextClient = upcomingAppointments.length > 0 
+                ? `${upcomingAppointments[0].time} - ${upcomingAppointments[0].customerName}`
+                : 'Nenhum agendamento';
+            
+            document.getElementById('next-appointment').textContent = nextClient;
+        }
+
+        function updateWeeklyStats(appointments) {
+            const oneWeekAgo = new Date();
+            oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
+            
+            const weeklyAppointments = appointments.filter(apt => {
+                const aptDate = new Date(apt.date);
+                return aptDate >= oneWeekAgo;
+            });
+            
+            const weeklyRevenue = weeklyAppointments.reduce((total, apt) => total + (apt.price || 0), 0);
+            const weeklyClients = weeklyAppointments.length;
+            const weeklyConfirmed = weeklyAppointments.filter(apt => apt.status === 'confirmado').length;
+            const weeklyConfirmationRate = weeklyClients > 0 ? Math.round((weeklyConfirmed / weeklyClients) * 100) : 100;
+            
+            document.getElementById('weekly-revenue').textContent = `R$ ${weeklyRevenue.toFixed(2).replace('.', ',')}`;
+            document.getElementById('weekly-clients').textContent = weeklyClients;
+            document.getElementById('weekly-confirmation').textContent = `${weeklyConfirmationRate}%`;
+            
+            // Most popular service
+            const serviceCount = {};
+            weeklyAppointments.forEach(apt => {
+                const service = apt.service || 'Não informado';
+                serviceCount[service] = (serviceCount[service] || 0) + 1;
+            });
+            
+            const popularService = Object.keys(serviceCount).reduce((a, b) => 
+                serviceCount[a] > serviceCount[b] ? a : b, 'Corte + Barba'
+            );
+            
+            document.getElementById('popular-service').textContent = popularService.split(' - ')[0];
+        }
+
+        function displayTodayAppointments(appointments) {
+            const appointmentsList = document.getElementById('appointments-list');
+            const noAppointments = document.getElementById('no-appointments');
+            
+            if (appointments.length === 0) {
+                noAppointments.style.display = 'block';
+                return;
+            }
+            
+            noAppointments.style.display = 'none';
+            
+            // Sort appointments by time
+            appointments.sort((a, b) => a.time.localeCompare(b.time));
+            
+            appointmentsList.innerHTML = appointments.map(apt => `
+                <div class="appointment-card" data-id="${apt.id}">
+                    <div class="appointment-header">
+                        <div class="appointment-time">🕐 ${apt.time}</div>
+                        <div class="status-badge ${apt.status || 'novo'}">
+                            ${getStatusIcon(apt.status || 'novo')} ${getStatusText(apt.status || 'novo')}
+                        </div>
+                    </div>
+                    <div class="appointment-details">
+                        <h3>${apt.customerName}</h3>
+                        <p>✂️ ${apt.service}</p>
+                        <p class="phone">📱 ${apt.phone}</p>
+                        ${apt.email ? `<p>📧 ${apt.email}</p>` : ''}
+                        ${apt.notes ? `<p class="notes">📝 "${apt.notes}"</p>` : ''}
+                    </div>
+                    <div class="appointment-actions">
+                        <button class="action-btn whatsapp-btn" onclick="sendWhatsAppMessage('${apt.id}', 'confirmation')">
+                            📱 Confirmar
+                        </button>
+                        <button class="action-btn whatsapp-btn" onclick="sendWhatsAppMessage('${apt.id}', 'reminder')">
+                            ⏰ Lembrete
+                        </button>
+                        <button class="action-btn confirm-btn" onclick="updateAppointmentStatus('${apt.id}', 'confirmado')">
+                            ✅ Confirmado
+                        </button>
+                        <button class="action-btn complete-btn" onclick="updateAppointmentStatus('${apt.id}', 'concluido')">
+                            ✨ Concluído
+                        </button>
+                        <button class="action-btn reschedule-btn" onclick="sendWhatsAppMessage('${apt.id}', 'reschedule')">
+                            📅 Reagendar
+                        </button>
+                        <button class="action-btn cancel-btn" onclick="updateAppointmentStatus('${apt.id}', 'cancelado')">
+                            ❌ Cancelar
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function getStatusIcon(status) {
+            const icons = {
+                'novo': '🆕',
+                'contactado': '📞',
+                'confirmado': '✅',
+                'em-andamento': '⏰',
+                'concluido': '✨',
+                'cancelado': '❌'
+            };
+            return icons[status] || '🆕';
+        }
+
+        function getStatusText(status) {
+            const texts = {
+                'novo': 'NOVO',
+                'contactado': 'CONTACTADO',
+                'confirmado': 'CONFIRMADO',
+                'em-andamento': 'EM ANDAMENTO',
+                'concluido': 'CONCLUÍDO',
+                'cancelado': 'CANCELADO'
+            };
+            return texts[status] || 'NOVO';
+        }
+
+        function sendWhatsAppMessage(appointmentId, templateType) {
+            const appointments = JSON.parse(localStorage.getItem('mondadori_appointments')) || [];
+            const appointment = appointments.find(apt => apt.id === appointmentId);
+            
+            if (!appointment) return;
+            
+            const settings = JSON.parse(localStorage.getItem('mondadori_admin_settings'));
+            const template = settings.templates[templateType];
+            
+            const message = template
+                .replace(/{name}/g, appointment.customerName)
+                .replace(/{service}/g, appointment.service || 'Serviço não especificado')
+                .replace(/{price}/g, appointment.price ? `R$ ${appointment.price.toFixed(2).replace('.', ',')}` : 'A combinar')
+                .replace(/{date}/g, new Date(appointment.date).toLocaleDateString('pt-BR'))
+                .replace(/{time}/g, appointment.time);
+            
+            const whatsappUrl = `https://wa.me/55${appointment.phone.replace(/\D/g, '')}?text=${encodeURIComponent(message)}`;
+            window.open(whatsappUrl, '_blank');
+            
+            // Update status to contacted
+            updateAppointmentStatus(appointmentId, 'contactado');
+        }
+
+        function updateAppointmentStatus(appointmentId, newStatus) {
+            const appointments = JSON.parse(localStorage.getItem('mondadori_appointments')) || [];
+            const appointmentIndex = appointments.findIndex(apt => apt.id === appointmentId);
+            
+            if (appointmentIndex !== -1) {
+                appointments[appointmentIndex].status = newStatus;
+                localStorage.setItem('mondadori_appointments', JSON.stringify(appointments));
+                
+                showMessage(`Status atualizado para: ${getStatusText(newStatus)}`, 'success');
+                loadDashboardData();
+            }
+        }
+
+        function updateCurrentDate() {
+            const now = new Date();
+            const options = { 
+                weekday: 'long', 
+                year: 'numeric', 
+                month: 'long', 
+                day: 'numeric' 
+            };
+            document.getElementById('current-date').textContent = now.toLocaleDateString('pt-BR', options);
+        }
+
+        function loadSettingsData() {
+            const settings = JSON.parse(localStorage.getItem('mondadori_admin_settings'));
+            
+            document.getElementById('new-username').value = settings.username;
+            document.getElementById('confirmation-template').value = settings.templates.confirmation;
+            document.getElementById('reminder-template').value = settings.templates.reminder;
+            document.getElementById('reschedule-template').value = settings.templates.reschedule;
+            document.getElementById('start-time').value = settings.businessHours.start;
+            document.getElementById('end-time').value = settings.businessHours.end;
+        }
+
+        function updateCredentials() {
+            const newUsername = document.getElementById('new-username').value;
+            const newPassword = document.getElementById('new-password').value;
+            const confirmPassword = document.getElementById('confirm-password').value;
+            
+            if (!newUsername || !newPassword) {
+                showMessage('Preencha usuário e senha!', 'error');
+                return;
+            }
+            
+            if (newPassword !== confirmPassword) {
+                showMessage('Senhas não conferem!', 'error');
+                return;
+            }
+            
+            const settings = JSON.parse(localStorage.getItem('mondadori_admin_settings'));
+            settings.username = newUsername;
+            settings.password = newPassword;
+            localStorage.setItem('mondadori_admin_settings', JSON.stringify(settings));
+            
+            showMessage('Credenciais atualizadas com sucesso!', 'success');
+            
+            // Clear password fields
+            document.getElementById('new-password').value = '';
+            document.getElementById('confirm-password').value = '';
+        }
+
+        function saveTemplates() {
+            const settings = JSON.parse(localStorage.getItem('mondadori_admin_settings'));
+            
+            settings.templates.confirmation = document.getElementById('confirmation-template').value;
+            settings.templates.reminder = document.getElementById('reminder-template').value;
+            settings.templates.reschedule = document.getElementById('reschedule-template').value;
+            
+            localStorage.setItem('mondadori_admin_settings', JSON.stringify(settings));
+            showMessage('Templates salvos com sucesso!', 'success');
+        }
+
+        function updateBusinessHours() {
+            const settings = JSON.parse(localStorage.getItem('mondadori_admin_settings'));
+            
+            settings.businessHours.start = document.getElementById('start-time').value;
+            settings.businessHours.end = document.getElementById('end-time').value;
+            
+            localStorage.setItem('mondadori_admin_settings', JSON.stringify(settings));
+            showMessage('Horários atualizados com sucesso!', 'success');
+        }
+
+        function exportData() {
+            const appointments = localStorage.getItem('mondadori_appointments');
+            const settings = localStorage.getItem('mondadori_admin_settings');
+            
+            const data = {
+                appointments: JSON.parse(appointments || '[]'),
+                settings: JSON.parse(settings || '{}'),
+                exportDate: new Date().toISOString()
+            };
+            
+            const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `mondadori_backup_${new Date().toISOString().split('T')[0]}.json`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            
+            showMessage('Dados exportados com sucesso!', 'success');
+        }
+
+        function clearAllData() {
+            if (confirm('ATENÇÃO: Isso irá apagar TODOS os dados permanentemente. Deseja continuar?')) {
+                localStorage.removeItem('mondadori_appointments');
+                localStorage.removeItem('mondadori_admin_settings');
+                showMessage('Todos os dados foram limpos!', 'success');
+                setTimeout(() => {
+                    location.reload();
+                }, 2000);
+            }
+        }
+
+        function showMessage(message, type) {
+            const messageEl = document.getElementById('success-message');
+            if (messageEl) {
+                messageEl.textContent = message;
+                messageEl.style.background = type === 'success' ? '#32CD32' : '#DC143C';
+                messageEl.style.color = type === 'success' ? '#000' : '#fff';
+                messageEl.classList.add('active');
+                
+                setTimeout(() => {
+                    messageEl.classList.remove('active');
+                }, 4000);
+            } else {
+                // Fallback to alert if message element doesn't exist
+                alert(message);
+            }
+        }
+
+        function generateUniqueId() {
+            return 'apt_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+        }
+
+        // Add scroll animations
+        function setupScrollAnimations() {
+            const observerOptions = {
+                threshold: 0.1,
+                rootMargin: '0px 0px -50px 0px'
+            };
+
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.style.opacity = '1';
+                        entry.target.style.transform = 'translateY(0)';
+                    }
+                });
+            }, observerOptions);
+
+            // Observe service cards and package cards
+            document.querySelectorAll('.service-card, .package-card').forEach(card => {
+                card.style.opacity = '0';
+                card.style.transform = 'translateY(30px)';
+                card.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+                observer.observe(card);
+            });
+        }
+
+        // Setup scroll animations after DOM is loaded
+        document.addEventListener('DOMContentLoaded', setupScrollAnimations);
+    </script>
+<script>
+// Force populate time slots - backup method to ensure they're always available
+window.addEventListener('load', function() {
+    setTimeout(function() {
+        const timeSelect = document.getElementById('time');
+        if (timeSelect && timeSelect.options.length <= 1) {
+            console.log('Backup: Adding time slots...');
+            
+            const times = [
+                '10:00', '10:30', '11:00', '11:30', 
+                '12:00', '12:30', '13:00', '13:30',
+                '14:00', '14:30', '15:00', '15:30',
+                '16:00', '16:30', '17:00', '17:30',
+                '18:00', '18:30', '19:00', '19:30'
+            ];
+            
+            times.forEach(function(time) {
+                const option = document.createElement('option');
+                option.value = time;
+                option.textContent = time;
+                timeSelect.appendChild(option);
+            });
+            
+            console.log('Backup time slots added:', times.length);
+        } else if (timeSelect) {
+            console.log('Time slots already available:', timeSelect.options.length - 1);
+        }
+    }, 1000);
+    
+    // Initialize shared storage on page load
+    const SHARED_STORAGE_KEY = 'mondadori_barbershop_appointments_global';
+    console.log('Shared storage system initialized');
+    console.log('Storage key:', SHARED_STORAGE_KEY);
+    
+    // Log current data for debugging
+    const currentData = getFromSharedStorage();
+    console.log('Current appointments in shared storage:', currentData.length);
+});
+</script>
+</body>
+</html>
