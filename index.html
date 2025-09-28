@@ -54,9 +54,9 @@
         }
 
         :root {
-            --primary-gold: #C4A572;
-            --secondary-gold: #B8A082;
-            --accent-orange: #A89474;
+            --primary-gold: #D4B068;
+            --secondary-gold: #D4B068;
+            --accent-orange: #B8A082;
             --black: #000000;
             --dark-gray: #1a1a1a;
             --regular-text: #CCCCCC;
@@ -166,7 +166,7 @@
         /* Hero Section */
         .hero {
             min-height: 100vh;
-            background: linear-gradient(135deg, rgba(0,0,0,0.8), rgba(26,26,26,0.9)), 
+            background: linear-gradient(135deg, rgba(0,0,0,0.8), rgba(26,26,26,0.9)),
                         url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 600"><rect fill="%23000" width="1200" height="600"/><g fill="%23FFD700" opacity="0.1"><polygon points="100,50 200,50 150,150"/><polygon points="300,100 400,100 350,200"/><polygon points="500,150 600,150 550,250"/><polygon points="700,50 800,50 750,150"/><polygon points="900,100 1000,100 950,200"/></g></svg>');
             background-size: cover;
             background-position: center;
@@ -175,6 +175,7 @@
             justify-content: center;
             text-align: center;
             position: relative;
+            padding-top: 100px;
         }
 
         .hero-content {
@@ -193,7 +194,7 @@
             width: 400px;
             object-fit: cover;
             border-radius: 50%;
-            filter: drop-shadow(0 0 30px rgba(196, 165, 114, 0.6));
+            filter: drop-shadow(0 0 30px rgba(212, 176, 104, 0.6));
             transition: transform 0.3s ease;
         }
 
@@ -205,6 +206,7 @@
             font-size: 4rem;
             font-weight: bold;
             margin-bottom: 1rem;
+            color: var(--primary-gold);
             background: linear-gradient(45deg, var(--primary-gold), var(--accent-orange));
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
@@ -339,7 +341,7 @@
         .service-card:hover {
             transform: translateY(-10px);
             border-color: var(--primary-gold);
-            box-shadow: 0 15px 30px rgba(196, 165, 114, 0.2);
+            box-shadow: 0 15px 30px rgba(212, 176, 104, 0.2);
         }
 
         .service-card:hover::before {
@@ -438,7 +440,7 @@
             padding: 3rem;
             border-radius: 20px;
             border: 2px solid var(--primary-gold);
-            box-shadow: 0 15px 35px rgba(196, 165, 114, 0.2);
+            box-shadow: 0 15px 35px rgba(212, 176, 104, 0.2);
         }
 
         .form-group {
@@ -470,7 +472,7 @@
         .form-group textarea:focus {
             outline: none;
             border-color: var(--primary-gold);
-            box-shadow: 0 0 10px rgba(196, 165, 114, 0.3);
+            box-shadow: 0 0 10px rgba(212, 176, 104, 0.3);
         }
 
         .form-row {
@@ -1282,7 +1284,7 @@ Aguardo confirmação do agendamento! 💈`;
                         background: linear-gradient(145deg, #1a1a1a, #2a2a2a);
                         padding: 2.5rem;
                         border-radius: 20px;
-                        border: 3px solid #C4A572;
+                        border: 3px solid #D4B068;
                         text-align: center;
                         color: white;
                         max-width: 450px;
@@ -1295,7 +1297,7 @@ Aguardo confirmação do agendamento! 💈`;
                         ">✅</div>
                         
                         <h2 style="
-                            color: #C4A572;
+                            color: #D4B068;
                             margin-bottom: 1rem;
                             font-size: 1.5rem;
                         ">
@@ -1316,7 +1318,7 @@ Aguardo confirmação do agendamento! 💈`;
                             padding: 1rem;
                             border-radius: 10px;
                             margin-bottom: 1.5rem;
-                            border-left: 4px solid #C4A572;
+                            border-left: 4px solid #D4B068;
                         ">
                             <p style="
                                 margin: 0;
@@ -1324,12 +1326,12 @@ Aguardo confirmação do agendamento! 💈`;
                                 color: #ccc;
                             ">
                                 📱 Se o WhatsApp não abrir automaticamente,<br>
-                                entre em contato: <strong style="color: #C4A572;">(41) 98432-5356</strong>
+                                entre em contato: <strong style="color: #D4B068;">(41) 98432-5356</strong>
                             </p>
                         </div>
                         
                         <button onclick="closeSuccessModal()" style="
-                            background: linear-gradient(45deg, #C4A572, #A89474);
+                            background: linear-gradient(45deg, #D4B068, #B8A082);
                             border: none;
                             padding: 1rem 2rem;
                             border-radius: 10px;
