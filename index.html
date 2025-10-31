@@ -6,7 +6,7 @@
     <title>Mondadori Barbershop - Barbearia Premium em Curitiba</title>
     <meta name="description" content="Mondadori Barbershop - A melhor barbearia de Curitiba. Serviços profissionais de corte, barba e tratamentos capilares. Agende pelo WhatsApp!">
     <meta name="keywords" content="barbearia, corte masculino, barba, Curitiba, Diego, Mondadori">
-    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cpolygon points='50,10 85,30 85,70 50,90 15,70 15,30' fill='%23FFD700'/%3E%3Ctext x='50' y='58' text-anchor='middle' font-family='Arial' font-size='24' font-weight='bold' fill='%23000'%3EMB%3C/text%3E%3C/svg%3E">
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cpolygon points='50,10 85,30 85,70 50,90 15,70 15,30' fill='%23A88848'/%3E%3Ctext x='50' y='58' text-anchor='middle' font-family='Arial' font-size='24' font-weight='bold' fill='%23000'%3EMB%3C/text%3E%3C/svg%3E">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <!-- Firebase SDK -->
@@ -54,9 +54,9 @@
         }
 
         :root {
-            --primary-gold: #D4B068;
-            --secondary-gold: #D4B068;
-            --accent-orange: #B8A082;
+            --primary-gold: #A88848;
+            --secondary-gold: #A88848;
+            --accent-orange: #A88848;
             --black: #000000;
             --dark-gray: #1a1a1a;
             --regular-text: #CCCCCC;
@@ -90,7 +90,7 @@
 
         .header.scrolled {
             background: rgba(0, 0, 0, 0.98);
-            box-shadow: 0 2px 20px rgba(255, 215, 0, 0.3);
+            box-shadow: 0 2px 20px rgba(168, 136, 72, 0.3);
         }
 
         .nav-container {
@@ -111,7 +111,7 @@
 
         .logo img {
             height: 80px;
-            filter: drop-shadow(0 0 10px rgba(255, 215, 0, 0.5));
+            filter: drop-shadow(0 0 10px rgba(168, 136, 72, 0.5));
         }
 
         /* Navigation */
@@ -167,7 +167,7 @@
         .hero {
             min-height: 100vh;
             background: linear-gradient(135deg, rgba(0,0,0,0.8), rgba(26,26,26,0.9)),
-                        url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 600"><rect fill="%23000" width="1200" height="600"/><g fill="%23FFD700" opacity="0.1"><polygon points="100,50 200,50 150,150"/><polygon points="300,100 400,100 350,200"/><polygon points="500,150 600,150 550,250"/><polygon points="700,50 800,50 750,150"/><polygon points="900,100 1000,100 950,200"/></g></svg>');
+                        url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 600"><rect fill="%23000" width="1200" height="600"/><g fill="%23A88848" opacity="0.1"><polygon points="100,50 200,50 150,150"/><polygon points="300,100 400,100 350,200"/><polygon points="500,150 600,150 550,250"/><polygon points="700,50 800,50 750,150"/><polygon points="900,100 1000,100 950,200"/></g></svg>');
             background-size: cover;
             background-position: center;
             display: flex;
@@ -175,7 +175,7 @@
             justify-content: center;
             text-align: center;
             position: relative;
-            padding-top: 100px;
+            padding: 100px 0;
         }
 
         .hero-content {
@@ -194,7 +194,7 @@
             width: 400px;
             object-fit: cover;
             border-radius: 50%;
-            filter: drop-shadow(0 0 30px rgba(212, 176, 104, 0.6));
+            filter: drop-shadow(0 0 30px rgba(168, 136, 72, 0.6));
             transition: transform 0.3s ease;
         }
 
@@ -231,12 +231,12 @@
             font-weight: bold;
             border-radius: 50px;
             transition: var(--transition);
-            box-shadow: 0 5px 15px rgba(255, 215, 0, 0.4);
+            box-shadow: 0 5px 15px rgba(168, 136, 72, 0.4);
         }
 
         .cta-button:hover {
             transform: translateY(-3px);
-            box-shadow: 0 8px 25px rgba(255, 215, 0, 0.6);
+            box-shadow: 0 8px 25px rgba(168, 136, 72, 0.6);
         }
 
         /* Section Styles */
@@ -300,7 +300,7 @@
             margin: 0 auto;
             font-size: 3rem;
             color: var(--black);
-            box-shadow: 0 10px 30px rgba(255, 215, 0, 0.3);
+            box-shadow: 0 10px 30px rgba(168, 136, 72, 0.3);
         }
 
         /* Services Section */
@@ -341,7 +341,7 @@
         .service-card:hover {
             transform: translateY(-10px);
             border-color: var(--primary-gold);
-            box-shadow: 0 15px 30px rgba(212, 176, 104, 0.2);
+            box-shadow: 0 15px 30px rgba(168, 136, 72, 0.2);
         }
 
         .service-card:hover::before {
@@ -393,7 +393,7 @@
             left: -50%;
             width: 200%;
             height: 200%;
-            background: linear-gradient(45deg, transparent, rgba(255, 215, 0, 0.1), transparent);
+            background: linear-gradient(45deg, transparent, rgba(168, 136, 72, 0.1), transparent);
             transform: rotate(45deg);
             transition: var(--transition);
             opacity: 0;
@@ -405,7 +405,7 @@
 
         .package-card:hover {
             transform: scale(1.05);
-            box-shadow: 0 20px 40px rgba(255, 215, 0, 0.3);
+            box-shadow: 0 20px 40px rgba(168, 136, 72, 0.3);
         }
 
         .package-name {
@@ -440,7 +440,7 @@
             padding: 3rem;
             border-radius: 20px;
             border: 2px solid var(--primary-gold);
-            box-shadow: 0 15px 35px rgba(212, 176, 104, 0.2);
+            box-shadow: 0 15px 35px rgba(168, 136, 72, 0.2);
         }
 
         .form-group {
@@ -472,7 +472,7 @@
         .form-group textarea:focus {
             outline: none;
             border-color: var(--primary-gold);
-            box-shadow: 0 0 10px rgba(212, 176, 104, 0.3);
+            box-shadow: 0 0 10px rgba(168, 136, 72, 0.3);
         }
 
         .form-row {
@@ -496,7 +496,7 @@
 
         .submit-btn:hover {
             transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(255, 215, 0, 0.4);
+            box-shadow: 0 5px 15px rgba(168, 136, 72, 0.4);
         }
 
         /* Contact Section */
@@ -693,6 +693,28 @@
             .booking-form {
                 padding: 2rem;
                 margin: 0 1rem;
+            }
+        }
+
+        /* Desktop optimizations */
+        @media (min-width: 1024px) {
+            .hero {
+                min-height: 100vh;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+
+            .hero-content {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+            }
+
+            .hero-logo img {
+                height: 420px;
+                width: 420px;
             }
         }
     </style>
@@ -1284,12 +1306,12 @@ Aguardo confirmação do agendamento! 💈`;
                         background: linear-gradient(145deg, #1a1a1a, #2a2a2a);
                         padding: 2.5rem;
                         border-radius: 20px;
-                        border: 3px solid #D4B068;
+                        border: 3px solid #A88848;
                         text-align: center;
                         color: white;
                         max-width: 450px;
                         width: 90%;
-                        box-shadow: 0 20px 60px rgba(255, 215, 0, 0.3);
+                        box-shadow: 0 20px 60px rgba(168, 136, 72, 0.3);
                     ">
                         <div style="
                             font-size: 3rem;
@@ -1297,7 +1319,7 @@ Aguardo confirmação do agendamento! 💈`;
                         ">✅</div>
                         
                         <h2 style="
-                            color: #D4B068;
+                            color: #A88848;
                             margin-bottom: 1rem;
                             font-size: 1.5rem;
                         ">
@@ -1314,11 +1336,11 @@ Aguardo confirmação do agendamento! 💈`;
                         </p>
                         
                         <div style="
-                            background: rgba(255, 215, 0, 0.1);
+                            background: rgba(168, 136, 72, 0.1);
                             padding: 1rem;
                             border-radius: 10px;
                             margin-bottom: 1.5rem;
-                            border-left: 4px solid #D4B068;
+                            border-left: 4px solid #A88848;
                         ">
                             <p style="
                                 margin: 0;
@@ -1326,12 +1348,12 @@ Aguardo confirmação do agendamento! 💈`;
                                 color: #ccc;
                             ">
                                 📱 Se o WhatsApp não abrir automaticamente,<br>
-                                entre em contato: <strong style="color: #D4B068;">(41) 98432-5356</strong>
+                                entre em contato: <strong style="color: #A88848;">(41) 98432-5356</strong>
                             </p>
                         </div>
                         
                         <button onclick="closeSuccessModal()" style="
-                            background: linear-gradient(45deg, #D4B068, #B8A082);
+                            background: linear-gradient(45deg, #A88848, #A88848);
                             border: none;
                             padding: 1rem 2rem;
                             border-radius: 10px;
