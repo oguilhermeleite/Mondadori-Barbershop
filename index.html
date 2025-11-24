@@ -55,18 +55,13 @@
             gap: 1rem;
         }
 
-        .logo-hexagon {
-            width: 50px;
-            height: 50px;
-            background: var(--primary-gold);
-            clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: bold;
-            font-size: 1rem;
-            color: var(--text-dark);
+        .logo-image {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            object-fit: cover;
             box-shadow: 0 0 15px rgba(168, 136, 72, 0.5);
+            border: 2px solid var(--primary-gold);
         }
 
         .header-info h1 {
@@ -562,10 +557,9 @@
                 font-size: 0.75rem;
             }
 
-            .logo-hexagon {
-                width: 40px;
-                height: 40px;
-                font-size: 0.85rem;
+            .logo-image {
+                width: 50px;
+                height: 50px;
             }
 
             .message-content {
@@ -606,7 +600,7 @@
     <!-- Header -->
     <header class="chat-header">
         <div class="header-left">
-            <div class="logo-hexagon">MB</div>
+            <img src="./assets/Mondadori.jpg" alt="Mondadori Logo" class="logo-image">
             <div class="header-info">
                 <h1>Mondadori Barbershop</h1>
                 <p>Assistente Virtual de Agendamento</p>
