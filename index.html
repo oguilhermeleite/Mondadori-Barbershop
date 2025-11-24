@@ -3,49 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mondadori Barbershop - Barbearia Premium em Curitiba</title>
-    <meta name="description" content="Mondadori Barbershop - A melhor barbearia de Curitiba. Serviços profissionais de corte, barba e tratamentos capilares. Agende pelo WhatsApp!">
-    <meta name="keywords" content="barbearia, corte masculino, barba, Curitiba, Diego, Mondadori">
+    <title>Mondadori Barbershop - Agendamento Online</title>
+    <meta name="description" content="Agende seu horário na Mondadori Barbershop de forma rápida e fácil. Atendimento premium em Curitiba.">
     <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cpolygon points='50,10 85,30 85,70 50,90 15,70 15,30' fill='%23A88848'/%3E%3Ctext x='50' y='58' text-anchor='middle' font-family='Arial' font-size='24' font-weight='bold' fill='%23000'%3EMB%3C/text%3E%3C/svg%3E">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
-    <!-- Firebase SDK -->
-    <script type="module">
-        // Import Firebase modules
-        import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
-        import { getFirestore, collection, addDoc, getDocs, query, orderBy, onSnapshot, serverTimestamp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
-        
-        // Firebase Configuration
-        // IMPORTANTE: Substitua estas configurações pelas suas do Firebase Console
-        const firebaseConfig = {
-            // SUBSTITUA ESTAS CONFIGURAÇÕES PELAS SUAS DO FIREBASE CONSOLE
-            apiKey: "AIzaSyBvOxKxvtXiVfzMxKxvtXiVfzMxKxvtXiV", // Exemplo - substitua pela sua
-            authDomain: "mondadori-barbershop.firebaseapp.com", // Exemplo - substitua pela sua
-            projectId: "mondadori-barbershop", // Exemplo - substitua pela sua
-            storageBucket: "mondadori-barbershop.appspot.com", // Exemplo - substitua pela sua
-            messagingSenderId: "123456789012", // Exemplo - substitua pela sua
-            appId: "1:123456789012:web:abcdef123456789012345" // Exemplo - substitua pela sua
-        };
-        
-        // Initialize Firebase
-        const app = initializeApp(firebaseConfig);
-        const db = getFirestore(app);
-        
-        // Make Firebase available globally
-        window.firebaseApp = app;
-        window.firebaseDb = db;
-        window.firebaseModules = {
-            collection,
-            addDoc,
-            getDocs,
-            query,
-            orderBy,
-            onSnapshot,
-            serverTimestamp
-        };
-        
-        console.log('🔥 Firebase inicializado com sucesso!');
-    </script>
+
     <style>
         * {
             margin: 0;
@@ -55,1434 +17,1156 @@
 
         :root {
             --primary-gold: #A88848;
-            --secondary-gold: #A88848;
-            --accent-orange: #A88848;
-            --black: #000000;
-            --dark-gray: #1a1a1a;
-            --regular-text: #CCCCCC;
-            --contrast-text: #ffffff;
-            --transition: all 0.3s ease;
-        }
-
-        html {
-            scroll-behavior: smooth;
+            --dark-bg: #0a0a0a;
+            --darker-bg: #1a1a1a;
+            --message-bg: #2d2d2d;
+            --user-message: #A88848;
+            --text-light: #e0e0e0;
+            --text-dark: #1a1a1a;
         }
 
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            line-height: 1.6;
-            color: var(--regular-text);
-            background: var(--black);
+            font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--dark-bg);
+            color: var(--text-light);
             overflow-x: hidden;
+            height: 100vh;
         }
 
-        /* Header Styles */
-        .header {
+        /* Header */
+        .chat-header {
             position: fixed;
             top: 0;
             width: 100%;
-            background: rgba(0, 0, 0, 0.95);
+            background: rgba(26, 26, 26, 0.98);
             backdrop-filter: blur(10px);
-            z-index: 1000;
-            padding: 1rem 0;
-            transition: var(--transition);
-        }
-
-        .header.scrolled {
-            background: rgba(0, 0, 0, 0.98);
-            box-shadow: 0 2px 20px rgba(168, 136, 72, 0.3);
-        }
-
-        .nav-container {
-            max-width: 1200px;
-            margin: 0 auto;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 0 2rem;
-        }
-
-        /* Logo */
-        .logo {
-            display: flex;
-            align-items: center;
-            text-decoration: none;
-        }
-
-        .logo img {
-            height: 80px;
-            filter: drop-shadow(0 0 10px rgba(168, 136, 72, 0.5));
-        }
-
-        /* Navigation */
-        .nav-menu {
-            display: flex;
-            list-style: none;
-            gap: 2rem;
-        }
-
-        .nav-link {
-            color: var(--regular-text);
-            text-decoration: none;
-            font-weight: 500;
-            transition: var(--transition);
-            position: relative;
-        }
-
-        .nav-link:hover {
-            color: var(--primary-gold);
-        }
-
-        .nav-link::after {
-            content: '';
-            position: absolute;
-            bottom: -5px;
-            left: 0;
-            width: 0;
-            height: 2px;
-            background: var(--primary-gold);
-            transition: var(--transition);
-        }
-
-        .nav-link:hover::after {
-            width: 100%;
-        }
-
-        .mobile-menu-toggle {
-            display: none;
-            flex-direction: column;
-            cursor: pointer;
-            padding: 5px;
-        }
-
-        .hamburger {
-            width: 25px;
-            height: 3px;
-            background: var(--primary-gold);
-            margin: 3px 0;
-            transition: var(--transition);
-        }
-
-        /* Hero Section */
-        .hero {
-            min-height: 100vh;
-            background: linear-gradient(135deg, rgba(0,0,0,0.8), rgba(26,26,26,0.9)),
-                        url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 600"><rect fill="%23000" width="1200" height="600"/><g fill="%23A88848" opacity="0.1"><polygon points="100,50 200,50 150,150"/><polygon points="300,100 400,100 350,200"/><polygon points="500,150 600,150 550,250"/><polygon points="700,50 800,50 750,150"/><polygon points="900,100 1000,100 950,200"/></g></svg>');
-            background-size: cover;
-            background-position: center;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            text-align: center;
-            position: relative;
-            padding: 100px 0;
-        }
-
-        .hero-content {
-            max-width: 800px;
-            padding: 0 2rem;
-            animation: fadeInUp 1s ease;
-        }
-
-        .hero-logo {
-            text-align: center;
-            margin-bottom: 2rem;
-        }
-
-        .hero-logo img {
-            height: 400px;
-            width: 400px;
-            object-fit: cover;
-            border-radius: 50%;
-            filter: drop-shadow(0 0 30px rgba(168, 136, 72, 0.6));
-            transition: transform 0.3s ease;
-        }
-
-        .hero-logo img:hover {
-            transform: scale(1.05);
-        }
-
-        .hero h1 {
-            font-size: 4rem;
-            font-weight: bold;
-            margin-bottom: 1rem;
-            color: var(--primary-gold);
-            background: linear-gradient(45deg, var(--primary-gold), var(--accent-orange));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
-        }
-
-        .hero p {
-            font-size: 1.3rem;
-            margin-bottom: 2rem;
-            opacity: 0.9;
-        }
-
-        .cta-button {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-            background: linear-gradient(45deg, var(--primary-gold), var(--accent-orange));
-            color: var(--black);
-            padding: 1rem 2rem;
-            text-decoration: none;
-            font-weight: bold;
-            border-radius: 50px;
-            transition: var(--transition);
-            box-shadow: 0 5px 15px rgba(168, 136, 72, 0.4);
-        }
-
-        .cta-button:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 8px 25px rgba(168, 136, 72, 0.6);
-        }
-
-        /* Section Styles */
-        .section {
-            padding: 5rem 0;
-            max-width: 1200px;
-            margin: 0 auto;
-            padding-left: 2rem;
-            padding-right: 2rem;
-        }
-
-        .section-title {
-            text-align: center;
-            font-size: 3rem;
-            margin-bottom: 3rem;
-            color: var(--primary-gold);
-            position: relative;
-        }
-
-        .section-title::after {
-            content: '';
-            display: block;
-            width: 100px;
-            height: 3px;
-            background: linear-gradient(45deg, var(--primary-gold), var(--accent-orange));
-            margin: 1rem auto;
-        }
-
-        /* About Section */
-        .about-content {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 3rem;
-            align-items: center;
-        }
-
-        .about-text h3 {
-            color: var(--primary-gold);
-            font-size: 2rem;
-            margin-bottom: 1rem;
-        }
-
-        .about-text p {
-            font-size: 1.1rem;
-            margin-bottom: 1.5rem;
-            line-height: 1.8;
-        }
-
-        .about-image {
-            text-align: center;
-        }
-
-        .about-image .placeholder {
-            width: 300px;
-            height: 300px;
-            background: linear-gradient(45deg, var(--primary-gold), var(--accent-orange));
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: 0 auto;
-            font-size: 3rem;
-            color: var(--black);
-            box-shadow: 0 10px 30px rgba(168, 136, 72, 0.3);
-        }
-
-        /* Services Section */
-        .services-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 1.5rem;
-            margin-top: 3rem;
-        }
-
-        .service-card {
-            background: var(--dark-gray);
-            padding: 1.5rem;
-            border-radius: 15px;
-            text-align: center;
-            transition: var(--transition);
-            border: 2px solid transparent;
-            position: relative;
-            overflow: hidden;
-            min-height: 140px;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-        }
-
-        .service-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 3px;
-            background: linear-gradient(45deg, var(--primary-gold), var(--accent-orange));
-            transform: scaleX(0);
-            transition: var(--transition);
-        }
-
-        .service-card:hover {
-            transform: translateY(-10px);
-            border-color: var(--primary-gold);
-            box-shadow: 0 15px 30px rgba(168, 136, 72, 0.2);
-        }
-
-        .service-card:hover::before {
-            transform: scaleX(1);
-        }
-
-        .service-icon {
-            font-size: 2.5rem;
-            color: var(--primary-gold);
-            margin-bottom: 0.75rem;
-        }
-
-        .service-name {
-            font-size: 1.1rem;
-            font-weight: bold;
-            margin-bottom: 0.5rem;
-            color: var(--primary-gold);
-        }
-
-        .service-price {
-            font-size: 1.3rem;
-            font-weight: bold;
-            color: var(--contrast-text);
-        }
-
-        /* Package Section */
-        .packages-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 2rem;
-            margin-top: 3rem;
-        }
-
-        .package-card {
-            background: linear-gradient(135deg, var(--dark-gray), #2a2a2a);
-            padding: 2.5rem;
-            border-radius: 20px;
-            text-align: center;
-            border: 3px solid var(--primary-gold);
-            position: relative;
-            overflow: hidden;
-            transition: var(--transition);
-        }
-
-        .package-card::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: linear-gradient(45deg, transparent, rgba(168, 136, 72, 0.1), transparent);
-            transform: rotate(45deg);
-            transition: var(--transition);
-            opacity: 0;
-        }
-
-        .package-card:hover::before {
-            animation: shine 1.5s ease-in-out;
-        }
-
-        .package-card:hover {
-            transform: scale(1.05);
-            box-shadow: 0 20px 40px rgba(168, 136, 72, 0.3);
-        }
-
-        .package-name {
-            font-size: 1.5rem;
-            font-weight: bold;
-            color: var(--primary-gold);
-            margin-bottom: 1rem;
-        }
-
-        .package-price {
-            font-size: 2.5rem;
-            font-weight: bold;
-            color: var(--contrast-text);
-            margin-bottom: 1rem;
-        }
-
-        .package-description {
-            opacity: 0.9;
-            line-height: 1.6;
-        }
-
-        /* Booking Section */
-        .booking {
-            background: var(--dark-gray);
-            padding: 5rem 0;
-        }
-
-        .booking-form {
-            max-width: 600px;
-            margin: 0 auto;
-            background: var(--black);
-            padding: 3rem;
-            border-radius: 20px;
-            border: 2px solid var(--primary-gold);
-            box-shadow: 0 15px 35px rgba(168, 136, 72, 0.2);
-        }
-
-        .form-group {
-            margin-bottom: 1.5rem;
-        }
-
-        .form-group label {
-            display: block;
-            margin-bottom: 0.5rem;
-            color: var(--primary-gold);
-            font-weight: 500;
-        }
-
-        .form-group input,
-        .form-group select,
-        .form-group textarea {
-            width: 100%;
             padding: 1rem;
-            border: 2px solid #333;
-            border-radius: 10px;
-            background: var(--dark-gray);
-            color: var(--contrast-text);
-            font-size: 1rem;
-            transition: var(--transition);
+            border-bottom: 2px solid var(--primary-gold);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 2px 20px rgba(168, 136, 72, 0.2);
         }
 
-        .form-group input:focus,
-        .form-group select:focus,
-        .form-group textarea:focus {
-            outline: none;
-            border-color: var(--primary-gold);
-            box-shadow: 0 0 10px rgba(168, 136, 72, 0.3);
-        }
-
-        .form-row {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
+        .header-left {
+            display: flex;
+            align-items: center;
             gap: 1rem;
         }
 
-        .submit-btn {
-            width: 100%;
-            background: linear-gradient(45deg, var(--primary-gold), var(--accent-orange));
-            color: var(--black);
-            padding: 1rem;
-            border: none;
-            border-radius: 10px;
-            font-size: 1.1rem;
+        .logo-hexagon {
+            width: 50px;
+            height: 50px;
+            background: var(--primary-gold);
+            clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
             font-weight: bold;
-            cursor: pointer;
-            transition: var(--transition);
+            font-size: 1rem;
+            color: var(--text-dark);
+            box-shadow: 0 0 15px rgba(168, 136, 72, 0.5);
         }
 
-        .submit-btn:hover {
+        .header-info h1 {
+            font-size: 1.2rem;
+            color: var(--primary-gold);
+            margin-bottom: 0.2rem;
+        }
+
+        .header-info p {
+            font-size: 0.85rem;
+            color: var(--text-light);
+            opacity: 0.8;
+        }
+
+        .info-button {
+            background: transparent;
+            border: 2px solid var(--primary-gold);
+            color: var(--primary-gold);
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 1.2rem;
+            transition: all 0.3s ease;
+        }
+
+        .info-button:hover {
+            background: var(--primary-gold);
+            color: var(--text-dark);
+            transform: rotate(90deg);
+        }
+
+        /* Chat Container */
+        .chat-container {
+            max-width: 800px;
+            margin: 0 auto;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            padding-top: 80px;
+        }
+
+        /* Messages Area */
+        .messages-area {
+            flex: 1;
+            overflow-y: auto;
+            padding: 2rem 1rem;
+            scroll-behavior: smooth;
+        }
+
+        .messages-area::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .messages-area::-webkit-scrollbar-track {
+            background: var(--darker-bg);
+        }
+
+        .messages-area::-webkit-scrollbar-thumb {
+            background: var(--primary-gold);
+            border-radius: 4px;
+        }
+
+        /* Message Bubbles */
+        .message {
+            display: flex;
+            margin-bottom: 1.5rem;
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .message.bot {
+            justify-content: flex-start;
+        }
+
+        .message.user {
+            justify-content: flex-end;
+        }
+
+        .message-content {
+            max-width: 70%;
+            padding: 1rem 1.2rem;
+            border-radius: 18px;
+            position: relative;
+        }
+
+        .message.bot .message-content {
+            background: var(--message-bg);
+            color: var(--text-light);
+            border-bottom-left-radius: 4px;
+        }
+
+        .message.user .message-content {
+            background: linear-gradient(135deg, var(--primary-gold), #c9a860);
+            color: var(--text-dark);
+            border-bottom-right-radius: 4px;
+            font-weight: 500;
+        }
+
+        /* Typing Indicator */
+        .typing-indicator {
+            display: none;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 1rem;
+            background: var(--message-bg);
+            border-radius: 18px;
+            border-bottom-left-radius: 4px;
+            max-width: fit-content;
+        }
+
+        .typing-indicator.active {
+            display: flex;
+        }
+
+        .typing-dot {
+            width: 8px;
+            height: 8px;
+            background: var(--primary-gold);
+            border-radius: 50%;
+            animation: typing 1.4s infinite;
+        }
+
+        .typing-dot:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+
+        .typing-dot:nth-child(3) {
+            animation-delay: 0.4s;
+        }
+
+        @keyframes typing {
+            0%, 60%, 100% {
+                transform: translateY(0);
+                opacity: 0.7;
+            }
+            30% {
+                transform: translateY(-10px);
+                opacity: 1;
+            }
+        }
+
+        /* Service Cards */
+        .service-options {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 0.8rem;
+            margin-top: 1rem;
+        }
+
+        .service-card {
+            background: var(--darker-bg);
+            border: 2px solid var(--primary-gold);
+            border-radius: 12px;
+            padding: 1rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .service-card:hover {
+            background: var(--primary-gold);
+            color: var(--text-dark);
+            transform: translateY(-4px);
+            box-shadow: 0 8px 20px rgba(168, 136, 72, 0.4);
+        }
+
+        .service-card .service-name {
+            font-weight: 600;
+            font-size: 0.95rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .service-card .service-price {
+            font-size: 1.1rem;
+            font-weight: bold;
+            color: var(--primary-gold);
+        }
+
+        .service-card:hover .service-price {
+            color: var(--text-dark);
+        }
+
+        /* Calendar Widget */
+        .calendar-widget {
+            background: var(--darker-bg);
+            border: 2px solid var(--primary-gold);
+            border-radius: 12px;
+            padding: 1rem;
+            margin-top: 1rem;
+        }
+
+        .calendar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+            color: var(--primary-gold);
+        }
+
+        .calendar-nav {
+            background: transparent;
+            border: none;
+            color: var(--primary-gold);
+            font-size: 1.2rem;
+            cursor: pointer;
+            padding: 0.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .calendar-nav:hover {
+            transform: scale(1.2);
+        }
+
+        .calendar-days {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 0.5rem;
+            text-align: center;
+        }
+
+        .calendar-day-label {
+            font-size: 0.8rem;
+            color: var(--primary-gold);
+            padding: 0.5rem;
+        }
+
+        .calendar-day {
+            padding: 0.8rem;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: var(--message-bg);
+        }
+
+        .calendar-day:hover:not(.disabled):not(.empty) {
+            background: var(--primary-gold);
+            color: var(--text-dark);
+            transform: scale(1.1);
+        }
+
+        .calendar-day.disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+        }
+
+        .calendar-day.empty {
+            background: transparent;
+            cursor: default;
+        }
+
+        .calendar-day.selected {
+            background: var(--primary-gold);
+            color: var(--text-dark);
+            font-weight: bold;
+        }
+
+        /* Time Slots */
+        .time-slots {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
+            gap: 0.8rem;
+            margin-top: 1rem;
+        }
+
+        .time-slot {
+            background: var(--darker-bg);
+            border: 2px solid var(--primary-gold);
+            border-radius: 8px;
+            padding: 0.8rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+        }
+
+        .time-slot:hover:not(.disabled) {
+            background: var(--primary-gold);
+            color: var(--text-dark);
+            transform: scale(1.05);
+        }
+
+        .time-slot.disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+            border-color: #555;
+        }
+
+        /* Confirmation Card */
+        .confirmation-card {
+            background: var(--darker-bg);
+            border: 2px solid var(--primary-gold);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-top: 1rem;
+        }
+
+        .confirmation-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.8rem 0;
+            border-bottom: 1px solid #333;
+        }
+
+        .confirmation-item:last-child {
+            border-bottom: none;
+        }
+
+        .confirmation-label {
+            color: var(--primary-gold);
+            font-weight: 600;
+        }
+
+        .confirmation-value {
+            color: var(--text-light);
+            text-align: right;
+        }
+
+        /* Action Buttons */
+        .action-buttons {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .action-button {
+            flex: 1;
+            padding: 1rem;
+            border: 2px solid var(--primary-gold);
+            border-radius: 10px;
+            background: transparent;
+            color: var(--primary-gold);
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 1rem;
+        }
+
+        .action-button.primary {
+            background: var(--primary-gold);
+            color: var(--text-dark);
+        }
+
+        .action-button:hover {
+            background: var(--primary-gold);
+            color: var(--text-dark);
             transform: translateY(-2px);
             box-shadow: 0 5px 15px rgba(168, 136, 72, 0.4);
         }
 
-        /* Contact Section */
-        .contact-content {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 3rem;
-            align-items: start;
-        }
-
-        .contact-info h3 {
-            color: var(--primary-gold);
-            font-size: 1.5rem;
-            margin-bottom: 1rem;
-        }
-
-        .contact-item {
-            display: flex;
-            align-items: center;
-            margin-bottom: 1rem;
-            padding: 1rem;
-            background: var(--dark-gray);
-            border-radius: 10px;
-            transition: var(--transition);
-        }
-
-        .contact-item:hover {
-            background: #2a2a2a;
-            transform: translateX(10px);
-        }
-
-        .contact-item i {
-            color: var(--primary-gold);
-            font-size: 1.5rem;
-            margin-right: 1rem;
-            width: 30px;
-        }
-
-        .map-container {
-            height: 400px;
-            border-radius: 15px;
-            overflow: hidden;
-            border: 3px solid var(--primary-gold);
-        }
-
-        /* WhatsApp Float Button */
-        .whatsapp-float {
+        /* Input Area */
+        .input-area {
             position: fixed;
-            bottom: 30px;
-            right: 30px;
-            background: #25D366;
-            color: white;
-            width: 60px;
-            height: 60px;
+            bottom: 0;
+            width: 100%;
+            max-width: 800px;
+            background: rgba(26, 26, 26, 0.98);
+            backdrop-filter: blur(10px);
+            padding: 1rem;
+            border-top: 2px solid var(--primary-gold);
+            display: none;
+        }
+
+        .input-area.active {
+            display: block;
+        }
+
+        .input-container {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .input-field {
+            flex: 1;
+            background: var(--message-bg);
+            border: 2px solid var(--primary-gold);
+            border-radius: 25px;
+            padding: 1rem 1.5rem;
+            color: var(--text-light);
+            font-size: 1rem;
+            outline: none;
+            transition: all 0.3s ease;
+        }
+
+        .input-field:focus {
+            box-shadow: 0 0 15px rgba(168, 136, 72, 0.3);
+        }
+
+        .input-field::placeholder {
+            color: #888;
+        }
+
+        .send-button {
+            background: var(--primary-gold);
+            border: none;
+            width: 50px;
+            height: 50px;
             border-radius: 50%;
+            color: var(--text-dark);
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 1.5rem;
-            text-decoration: none;
-            box-shadow: 0 5px 20px rgba(37, 211, 102, 0.4);
-            z-index: 1000;
-            transition: var(--transition);
-            animation: pulse 2s infinite;
         }
 
-        .whatsapp-float:hover {
+        .send-button:hover {
             transform: scale(1.1);
-            box-shadow: 0 8px 25px rgba(37, 211, 102, 0.6);
+            box-shadow: 0 5px 15px rgba(168, 136, 72, 0.5);
         }
 
-        /* Footer */
-        .footer {
-            background: var(--black);
-            padding: 3rem 0 1rem;
-            text-align: center;
-            border-top: 2px solid var(--primary-gold);
+        .send-button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
         }
 
-        .footer-content {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 2rem;
+        /* Info Modal */
+        .info-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.95);
+            z-index: 2000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
         }
 
-        .social-links {
-            margin-bottom: 2rem;
+        .info-modal.active {
+            display: flex;
         }
 
-        .social-links a {
+        .info-content {
+            background: var(--darker-bg);
+            border: 3px solid var(--primary-gold);
+            border-radius: 20px;
+            padding: 2rem;
+            max-width: 500px;
+            width: 100%;
+            position: relative;
+        }
+
+        .info-close {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: transparent;
+            border: none;
             color: var(--primary-gold);
-            font-size: 2rem;
-            margin: 0 1rem;
-            transition: var(--transition);
+            font-size: 1.5rem;
+            cursor: pointer;
         }
 
-        .social-links a:hover {
-            color: var(--accent-orange);
-            transform: translateY(-3px);
+        .info-item {
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: start;
+            gap: 1rem;
         }
 
-        .footer-text {
-            opacity: 0.8;
-            font-size: 0.9rem;
+        .info-icon {
+            color: var(--primary-gold);
+            font-size: 1.3rem;
+            min-width: 30px;
         }
 
-
-
-        /* Original Responsive Design */
+        /* Responsive */
         @media (max-width: 768px) {
-            .nav-menu {
-                position: fixed;
-                top: 80px;
-                left: -100%;
-                width: 100%;
-                height: calc(100vh - 80px);
-                background: rgba(0, 0, 0, 0.98);
+            .chat-header {
+                padding: 0.8rem;
+            }
+
+            .header-info h1 {
+                font-size: 1rem;
+            }
+
+            .header-info p {
+                font-size: 0.75rem;
+            }
+
+            .logo-hexagon {
+                width: 40px;
+                height: 40px;
+                font-size: 0.85rem;
+            }
+
+            .message-content {
+                max-width: 85%;
+            }
+
+            .service-options {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .time-slots {
+                grid-template-columns: repeat(3, 1fr);
+            }
+
+            .action-buttons {
                 flex-direction: column;
-                justify-content: center;
-                align-items: center;
-                transition: var(--transition);
-            }
-
-            .nav-menu.active {
-                left: 0;
-            }
-
-            .mobile-menu-toggle {
-                display: flex;
-            }
-
-            .hero-logo img {
-                height: 300px;
-                width: 300px;
-            }
-
-            .hero h1 {
-                font-size: 2.5rem;
-            }
-
-            .hero p {
-                font-size: 1.1rem;
-            }
-
-            .section-title {
-                font-size: 2rem;
-            }
-
-            .about-content {
-                grid-template-columns: 1fr;
-                text-align: center;
-            }
-
-            .contact-content {
-                grid-template-columns: 1fr;
-            }
-
-            .form-row {
-                grid-template-columns: 1fr;
-            }
-
-            .logo-main {
-                font-size: 1.3rem;
-            }
-
-            .logo-sub {
-                font-size: 0.7rem;
-            }
-
-            .nav-container {
-                padding: 0 1rem;
-            }
-
-            .section {
-                padding-left: 1rem;
-                padding-right: 1rem;
             }
         }
 
-        @media (max-width: 480px) {
-            .hero-logo img {
-                height: 240px;
-                width: 240px;
+        /* Success Animation */
+        @keyframes successPulse {
+            0%, 100% {
+                transform: scale(1);
             }
-
-            .hero h1 {
-                font-size: 2rem;
-            }
-
-            .section-title {
-                font-size: 1.8rem;
-            }
-
-            .booking-form {
-                padding: 2rem;
-                margin: 0 1rem;
+            50% {
+                transform: scale(1.1);
             }
         }
 
-        /* Desktop optimizations */
-        @media (min-width: 1024px) {
-            .hero {
-                min-height: 100vh;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-            }
-
-            .hero-content {
-                display: flex;
-                flex-direction: column;
-                align-items: center;
-                justify-content: center;
-            }
-
-            .hero-logo img {
-                height: 420px;
-                width: 420px;
-            }
+        .success-icon {
+            font-size: 3rem;
+            color: var(--primary-gold);
+            animation: successPulse 1s ease infinite;
         }
     </style>
 </head>
 <body>
     <!-- Header -->
-    <header class="header" id="header">
-        <nav class="nav-container">
-            
-            <ul class="nav-menu" id="nav-menu">
-                <li><a href="#inicio" class="nav-link">Início</a></li>
-                <li><a href="#sobre" class="nav-link">Sobre</a></li>
-                <li><a href="#servicos" class="nav-link">Serviços</a></li>
-                <li><a href="#pacotes" class="nav-link">Pacotes</a></li>
-                <li><a href="#agendamento" class="nav-link">Agendamento</a></li>
-                <li><a href="#contato" class="nav-link">Contato</a></li>
-            </ul>
-            
-            <div class="mobile-menu-toggle" id="mobile-toggle">
-                <span class="hamburger"></span>
-                <span class="hamburger"></span>
-                <span class="hamburger"></span>
+    <header class="chat-header">
+        <div class="header-left">
+            <div class="logo-hexagon">MB</div>
+            <div class="header-info">
+                <h1>Mondadori Barbershop</h1>
+                <p>Assistente Virtual de Agendamento</p>
             </div>
-        </nav>
+        </div>
+        <button class="info-button" id="info-btn">
+            <i class="fas fa-info"></i>
+        </button>
     </header>
 
-    <!-- Hero Section -->
-    <section id="inicio" class="hero">
-        <div class="hero-content">
-            <div class="hero-logo">
-                <img src="./assets/Mondadori.jpg" alt="Mondadori Barbershop Logo">
-            </div>
-            <h1>MONDADORI BARBERSHOP</h1>
-            <p>Tradição e modernidade em cada corte. Experiência premium em barbearia com mais de 10 anos cuidando do visual masculino.</p>
-            <a href="https://chat.inbarberapp.com/SeuHorarioAqui" target="_blank" class="cta-button">
-                Agendar Agora
-            </a>
+    <!-- Chat Container -->
+    <div class="chat-container">
+        <div class="messages-area" id="messages-area">
+            <!-- Messages will be added here dynamically -->
         </div>
-    </section>
 
-    <!-- About Section -->
-    <section id="sobre" class="section">
-        <h2 class="section-title">Sobre o Diego</h2>
-        <div class="about-content">
-            <div class="about-text">
-                <h3>Tradição Familiar na Barbearia</h3>
-                <p>Meu nome é Diego e sou barbeiro há mais de 10 anos. A barbearia é uma tradição de família que venho perpetuando com muito carinho e dedicação.</p>
-                <p>Na Mondadori Barbershop, cada cliente recebe um atendimento personalizado e exclusivo. Utilizamos as melhores técnicas tradicionais combinadas com tendências modernas para garantir o melhor resultado.</p>
-                <p>Nosso compromisso é com a excelência, oferecendo não apenas um corte de cabelo, mas uma experiência completa de cuidado e bem-estar masculino.</p>
+        <!-- Input Area -->
+        <div class="input-area" id="input-area">
+            <div class="input-container">
+                <input
+                    type="text"
+                    class="input-field"
+                    id="user-input"
+                    placeholder="Digite sua resposta..."
+                    autocomplete="off"
+                >
+                <button class="send-button" id="send-btn">
+                    <i class="fas fa-paper-plane"></i>
+                </button>
             </div>
-            <div class="about-image">
-                <div class="placeholder">
-                    <i class="fas fa-user-tie"></i>
+        </div>
+    </div>
+
+    <!-- Info Modal -->
+    <div class="info-modal" id="info-modal">
+        <div class="info-content">
+            <button class="info-close" id="info-close">
+                <i class="fas fa-times"></i>
+            </button>
+            <h2 style="color: var(--primary-gold); margin-bottom: 1.5rem; text-align: center;">
+                Informações da Barbearia
+            </h2>
+
+            <div class="info-item">
+                <i class="fas fa-map-marker-alt info-icon"></i>
+                <div>
+                    <strong style="color: var(--primary-gold);">Endereço</strong><br>
+                    Rua Marechal Hermes, 2055<br>
+                    Curitiba - PR
+                </div>
+            </div>
+
+            <div class="info-item">
+                <i class="fas fa-clock info-icon"></i>
+                <div>
+                    <strong style="color: var(--primary-gold);">Horário</strong><br>
+                    Terça a Sexta: 10h às 20h<br>
+                    Sábado: Sob agendamento<br>
+                    Dom/Seg: Fechado
+                </div>
+            </div>
+
+            <div class="info-item">
+                <i class="fab fa-whatsapp info-icon"></i>
+                <div>
+                    <strong style="color: var(--primary-gold);">WhatsApp</strong><br>
+                    <a href="https://wa.me/5541984325356" style="color: var(--text-light);">
+                        (41) 98432-5356
+                    </a>
+                </div>
+            </div>
+
+            <div class="info-item">
+                <i class="fab fa-instagram info-icon"></i>
+                <div>
+                    <strong style="color: var(--primary-gold);">Instagram</strong><br>
+                    <a href="https://instagram.com/mondadori.barbershop" style="color: var(--text-light);">
+                        @mondadori.barbershop
+                    </a>
                 </div>
             </div>
         </div>
-    </section>
-
-    <!-- Services Section -->
-    <section id="servicos" class="section">
-        <h2 class="section-title">Nossos Serviços</h2>
-        <div class="services-grid">
-            <div class="service-card">
-                <div class="service-icon"><i class="fas fa-cut"></i></div>
-                <div class="service-name">Corte</div>
-                <div class="service-price">R$ 35</div>
-            </div>
-            <div class="service-card">
-                <div class="service-icon"><i class="fas fa-beard"></i></div>
-                <div class="service-name">Barba</div>
-                <div class="service-price">R$ 25</div>
-            </div>
-            <div class="service-card">
-                <div class="service-icon"><i class="fas fa-scissors"></i></div>
-                <div class="service-name">Acabamento Barba</div>
-                <div class="service-price">R$ 15</div>
-            </div>
-            <div class="service-card">
-                <div class="service-icon"><i class="fas fa-cut"></i></div>
-                <div class="service-name">Acabamento Cabelo</div>
-                <div class="service-price">R$ 20</div>
-            </div>
-            <div class="service-card">
-                <div class="service-icon"><i class="fas fa-eye"></i></div>
-                <div class="service-name">Sobrancelha Navalha</div>
-                <div class="service-price">R$ 20</div>
-            </div>
-            <div class="service-card">
-                <div class="service-icon"><i class="fas fa-star"></i></div>
-                <div class="service-name">Platinado</div>
-                <div class="service-price">R$ 80</div>
-            </div>
-            <div class="service-card">
-                <div class="service-icon"><i class="fas fa-paint-brush"></i></div>
-                <div class="service-name">Luzes</div>
-                <div class="service-price">R$ 60</div>
-            </div>
-            <div class="service-card">
-                <div class="service-icon"><i class="fas fa-leaf"></i></div>
-                <div class="service-name">Selagem</div>
-                <div class="service-price">R$ 45</div>
-            </div>
-            <div class="service-card">
-                <div class="service-icon"><i class="fas fa-tint"></i></div>
-                <div class="service-name">Hidratação Barba</div>
-                <div class="service-price">R$ 25</div>
-            </div>
-            <div class="service-card">
-                <div class="service-icon"><i class="fas fa-spa"></i></div>
-                <div class="service-name">Hidratação Cabelo</div>
-                <div class="service-price">R$ 30</div>
-            </div>
-            <div class="service-card">
-                <div class="service-icon"><i class="fas fa-cut"></i></div>
-                <div class="service-name">Combo Corte + Barba</div>
-                <div class="service-price">R$ 50</div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Packages Section -->
-    <section id="pacotes" class="section">
-        <h2 class="section-title">Pacotes Especiais</h2>
-        <div class="packages-grid">
-            <div class="package-card">
-                <div class="package-name">Club Cabelo</div>
-                <div class="package-price">R$ 119,90</div>
-                <div class="package-description">Pacote mensal para manutenção do cabelo com desconto especial</div>
-            </div>
-            <div class="package-card">
-                <div class="package-name">Club Cabelo & Barba</div>
-                <div class="package-price">R$ 219,90</div>
-                <div class="package-description">Pacote completo mensal para cabelo e barba com máximo desconto</div>
-            </div>
-            <div class="package-card">
-                <div class="package-name">Club Barba</div>
-                <div class="package-price">R$ 139,90</div>
-                <div class="package-description">Pacote mensal especializado em cuidados com a barba</div>
-            </div>
-            <div class="package-card">
-                <div class="package-name">Club Barba e Cabelo Raspado</div>
-                <div class="package-price">R$ 149,90</div>
-                <div class="package-description">Pacote para quem prefere o visual raspado com cuidados especiais</div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Booking Section -->
-    <section id="agendamento" class="booking">
-        <div class="section">
-            <h2 class="section-title">Agendar Horário</h2>
-            <div style="text-align: center; padding: 2rem 0;">
-                <p style="color: var(--light-gray); font-size: 1.1rem; margin-bottom: 2rem;">
-                    Agende seu horário de forma rápida e prática através do nosso sistema especializado
-                </p>
-                <a href="https://chat.inbarberapp.com/SeuHorarioAqui" target="_blank" class="submit-btn" style="display: inline-block; text-decoration: none;">
-                    Agendar Horário
-                </a>
-            </div>
-        </div>
-    </section>
-
-    <!-- Contact Section -->
-    <section id="contato" class="section">
-        <h2 class="section-title">Contato & Localização</h2>
-        <div class="contact-content">
-            <div class="contact-info">
-                <h3>Informações de Contato</h3>
-                
-                <div class="contact-item">
-                    <i class="fas fa-map-marker-alt"></i>
-                    <div>
-                        <strong>Endereço:</strong><br>
-                        Rua Marechal Hermes, 2055<br>
-                        Curitiba - PR
-                    </div>
-                </div>
-                
-                <div class="contact-item">
-                    <i class="fas fa-clock"></i>
-                    <div>
-                        <strong>Horário de Funcionamento:</strong><br>
-                        Terça a Sexta: 10h às 20h<br>
-                        Sábado: Sob agendamento<br>
-                        Domingo e Segunda: Fechado
-                    </div>
-                </div>
-                
-                <div class="contact-item">
-                    <i class="fab fa-whatsapp"></i>
-                    <div>
-                        <strong>WhatsApp:</strong><br>
-                        <a href="https://wa.me/5541984325356" style="color: var(--primary-gold); text-decoration: none;">
-                            (41) 98432-5356
-                        </a>
-                    </div>
-                </div>
-                
-                <div class="contact-item">
-                    <i class="fab fa-instagram"></i>
-                    <div>
-                        <strong>Instagram:</strong><br>
-                        <a href="https://instagram.com/mondadori.barbershop" style="color: var(--primary-gold); text-decoration: none;">
-                            @mondadori.barbershop
-                        </a>
-                    </div>
-                </div>
-                
-                <div class="contact-item">
-                    <i class="fab fa-facebook"></i>
-                    <div>
-                        <strong>Facebook:</strong><br>
-                        <a href="https://facebook.com/mondadori.barbershop" style="color: var(--primary-gold); text-decoration: none;">
-                            Mondadori Barbershop
-                        </a>
-                    </div>
-                </div>
-                
-                <div class="contact-item">
-                    <i class="fas fa-bus"></i>
-                    <div>
-                        <strong>Transporte Público:</strong><br>
-                        Linha "Bairro a bairro" e "Iná"<br>
-                        Estacionamento limitado disponível
-                    </div>
-                </div>
-            </div>
-            
-            <div class="map-container">
-                <iframe
-                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3602.5234567890123!2d-49.2730000!3d-25.4200000!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x94dce4c456789abc%3A0x1234567890abcdef!2sRua%20Marechal%20Hermes%2C%202055%20-%20Curitiba%20-%20PR!5e0!3m2!1spt-BR!2sbr!4v1234567890123!5m2!1spt-BR!2sbr"
-                    width="100%"
-                    height="100%"
-                    style="border:0;"
-                    allowfullscreen=""
-                    loading="lazy"
-                    referrerpolicy="no-referrer-when-downgrade">
-                </iframe>
-            </div>
-        </div>
-    </section>
-
-    <!-- Footer -->
-    <footer class="footer">
-        <div class="footer-content">
-            <div class="social-links">
-                <a href="https://wa.me/5541984325356"><i class="fab fa-whatsapp"></i></a>
-                <a href="https://instagram.com/mondadori.barbershop"><i class="fab fa-instagram"></i></a>
-                <a href="https://facebook.com/mondadori.barbershop"><i class="fab fa-facebook"></i></a>
-            </div>
-            <div class="footer-text">
-                <p>&copy; 2024 Mondadori Barbershop. Todos os direitos reservados.</p>
-                <p>Desenvolvido com ❤️ para oferecer a melhor experiência em barbearia.</p>
-            </div>
-        </div>
-    </footer>
-
-    <!-- WhatsApp Float Button -->
-    <a href="https://wa.me/5541984325356" class="whatsapp-float" target="_blank">
-        <i class="fab fa-whatsapp"></i>
-    </a>
-
+    </div>
 
     <script>
-
-
-
-
-
-
-
-    // Enhanced booking form integration
-    document.addEventListener('DOMContentLoaded', function() {
-        const bookingForm = document.getElementById('booking-form');
-        if (bookingForm) {
-            bookingForm.addEventListener('submit', function(e) {
-                // Let the existing WhatsApp functionality work
-                setTimeout(() => {
-                    const formData = new FormData(this);
-                    const appointmentData = {
-                        id: Date.now().toString(),
-                        customerName: formData.get('name'),
-                        phone: formData.get('phone'),
-                        email: formData.get('email') || '',
-                        service: formData.get('service'),
-                        date: formData.get('date'),
-                        time: formData.get('time'),
-                        notes: formData.get('observations') || '',
-                        status: 'novo',
-                        timestamp: new Date().toISOString()
-                    };
-                    
-                    console.log('Appointment data captured:', appointmentData);
-                }, 100);
-            });
-        }
-    });
-
-    </script>
-
-
-
-    <!-- Success Message -->
-    <div class="success-message" id="success-message"></div>
-
-    <script>
-        // Mobile menu toggle
-        const mobileToggle = document.getElementById('mobile-toggle');
-        const navMenu = document.getElementById('nav-menu');
-        
-        mobileToggle.addEventListener('click', () => {
-            navMenu.classList.toggle('active');
-        });
-
-        // Close mobile menu when clicking on a link
-        document.querySelectorAll('.nav-link').forEach(link => {
-            link.addEventListener('click', () => {
-                navMenu.classList.remove('active');
-            });
-        });
-
-        // Header scroll effect
-        window.addEventListener('scroll', () => {
-            const header = document.getElementById('header');
-            if (window.scrollY > 100) {
-                header.classList.add('scrolled');
-            } else {
-                header.classList.remove('scrolled');
-            }
-        });
-
-        // Generate time slots - Enhanced version
-        function generateTimeSlots() {
-            const dateInput = document.getElementById('date');
-            const timeSelect = document.getElementById('time');
-            
-            if (!timeSelect) return;
-            
-            // Clear existing options first
-            timeSelect.innerHTML = '';
-            
-            // Check if a date is selected
-            if (!dateInput || !dateInput.value) {
-                timeSelect.innerHTML = '<option value="">Selecione uma data primeiro</option>';
-                return;
-            }
-            
-            const selectedDate = new Date(dateInput.value);
-            const today = new Date();
-            const dayOfWeek = selectedDate.getDay(); // 0=Sunday, 1=Monday, etc.
-            
-            // Check if date is in the past
-            if (selectedDate < today.setHours(0,0,0,0)) {
-                timeSelect.innerHTML = '<option value="">Data deve ser futura</option>';
-                return;
-            }
-            
-            // Check if it's Sunday (0) or Monday (1) - closed days
-            if (dayOfWeek === 0 || dayOfWeek === 1) {
-                timeSelect.innerHTML = '<option value="">Fechado aos domingos e segundas</option>';
-                return;
-            }
-            
-            // Add default option
-            timeSelect.innerHTML = '<option value="">Selecione um horário</option>';
-            
-            // Generate time slots for Tuesday to Saturday (10:00 to 20:00)
-            const startHour = 10;
-            const endHour = 20;
-            
-            for (let hour = startHour; hour < endHour; hour++) {
-                // Add :00 slot
-                const time00 = String(hour).padStart(2, '0') + ':00';
-                const option00 = document.createElement('option');
-                option00.value = time00;
-                option00.textContent = time00;
-                timeSelect.appendChild(option00);
-                
-                // Add :30 slot
-                const time30 = String(hour).padStart(2, '0') + ':30';
-                const option30 = document.createElement('option');
-                option30.value = time30;
-                option30.textContent = time30;
-                timeSelect.appendChild(option30);
-            }
-            
-            console.log('Time slots generated for:', dateInput.value);
-        }
-
-        // Initialize time slots on page load
-        function initializeTimeSlots() {
-            const timeSelect = document.getElementById('time');
-            if (timeSelect) {
-                // Set initial state - no slots until date is selected
-                timeSelect.innerHTML = '<option value="">Selecione uma data primeiro</option>';
-            }
-        }
-
-        // Fallback function to populate all time slots (if needed)
-        function populateAllTimeSlots() {
-            const timeSelect = document.getElementById('time');
-            if (!timeSelect) return;
-            
-            const timeSlots = [
-                '10:00', '10:30', '11:00', '11:30', 
-                '12:00', '12:30', '13:00', '13:30',
-                '14:00', '14:30', '15:00', '15:30',
-                '16:00', '16:30', '17:00', '17:30',
-                '18:00', '18:30', '19:00', '19:30'
-            ];
-            
-            // Clear existing options
-            timeSelect.innerHTML = '<option value="">Selecione um horário</option>';
-            
-            // Add all time slots
-            timeSlots.forEach(time => {
-                const option = document.createElement('option');
-                option.value = time;
-                option.textContent = time;
-                timeSelect.appendChild(option);
-            });
-            
-            console.log('All time slots populated as fallback');
-        }
-
-        // Date validation
-        function setupDateValidation() {
-            const dateInput = document.getElementById('date');
-            const today = new Date();
-            const tomorrow = new Date(today);
-            tomorrow.setDate(tomorrow.getDate() + 1);
-            
-            // Set minimum date to tomorrow
-            dateInput.min = tomorrow.toISOString().split('T')[0];
-            
-            // Handle date changes - validate and generate time slots
-            dateInput.addEventListener('change', function() {
-                const selectedDate = new Date(this.value);
-                const dayOfWeek = selectedDate.getDay();
-                
-                if (dayOfWeek === 0 || dayOfWeek === 1) { // Sunday or Monday
-                    alert('Não funcionamos aos domingos e segundas-feiras. Por favor, escolha outro dia.');
-                    this.value = '';
-                    // Clear time slots when date is invalid
-                    const timeSelect = document.getElementById('time');
-                    if (timeSelect) {
-                        timeSelect.innerHTML = '<option value="">Selecione uma data válida primeiro</option>';
-                    }
-                } else {
-                    // Generate time slots for valid dates
-                    generateTimeSlots();
-                }
-            });
-        }
-
-        // Phone mask
-        function setupPhoneMask() {
-            const phoneInput = document.getElementById('phone');
-            
-            phoneInput.addEventListener('input', function() {
-                let value = this.value.replace(/\D/g, '');
-                
-                if (value.length >= 11) {
-                    value = value.replace(/(\d{2})(\d{5})(\d{4})/, '($1) $2-$3');
-                } else if (value.length >= 7) {
-                    value = value.replace(/(\d{2})(\d{4})(\d+)/, '($1) $2-$3');
-                } else if (value.length >= 3) {
-                    value = value.replace(/(\d{2})(\d+)/, '($1) $2');
-                }
-                
-                this.value = value;
-            });
-        }
-
-        // Form submission
-        function setupFormSubmission() {
-            const form = document.getElementById('booking-form');
-            
-            form.addEventListener('submit', function(e) {
-                e.preventDefault();
-                
-                const formData = new FormData(form);
-                const data = Object.fromEntries(formData);
-                
-                // Validate required fields
-                if (!data.name || !data.phone || !data.service || !data.date || !data.time) {
-                    alert('Por favor, preencha todos os campos obrigatórios.');
-                    return;
-                }
-
-                // Save appointment data
-                const appointmentData = {
-                    id: generateUniqueId(),
-                    customerName: data.name,
-                    phone: data.phone.replace(/\D/g, ''),
-                    email: data.email || '',
-                    service: data.service,
-                    price: extractPriceFromService(data.service),
-                    date: data.date,
-                    time: data.time,
-                    notes: data.observations || '',
-                    status: 'novo',
-                    timestamp: new Date().toISOString(),
-                    barber: data.barber || 'Diego'
+        // Chat Bot Logic
+        class MondadoriChatBot {
+            constructor() {
+                this.currentStep = 0;
+                this.bookingData = {
+                    name: '',
+                    service: '',
+                    servicePrice: '',
+                    date: '',
+                    time: '',
+                    phone: ''
                 };
-                
-                saveAppointmentToStorage(appointmentData);
-                
-                // Format WhatsApp message
-                const message = `🔸 *NOVO AGENDAMENTO - MONDADORI BARBERSHOP* 🔸
+                this.messagesArea = document.getElementById('messages-area');
+                this.inputArea = document.getElementById('input-area');
+                this.userInput = document.getElementById('user-input');
+                this.sendBtn = document.getElementById('send-btn');
 
-📋 *Dados do Cliente:*
-- Nome: ${data.name}
-- WhatsApp: ${data.phone}
-- Email: ${data.email || 'Não informado'}
+                this.services = [
+                    { name: 'Corte', price: 35 },
+                    { name: 'Barba', price: 25 },
+                    { name: 'Combo Corte + Barba', price: 50 },
+                    { name: 'Acabamento Barba', price: 15 },
+                    { name: 'Acabamento Cabelo', price: 20 },
+                    { name: 'Sobrancelha Navalha', price: 20 },
+                    { name: 'Platinado', price: 80 },
+                    { name: 'Luzes', price: 60 },
+                    { name: 'Selagem', price: 45 },
+                    { name: 'Hidratação Barba', price: 25 },
+                    { name: 'Hidratação Cabelo', price: 30 }
+                ];
 
-💼 *Serviço Solicitado:*
-- ${data.service}
+                this.init();
+            }
 
-📅 *Data e Horário:*
-- Data: ${new Date(data.date).toLocaleDateString('pt-BR')}
-- Horário: ${data.time}
-- Barbeiro: ${data.barber}
+            init() {
+                // Event listeners
+                this.sendBtn.addEventListener('click', () => this.handleUserInput());
+                this.userInput.addEventListener('keypress', (e) => {
+                    if (e.key === 'Enter') this.handleUserInput();
+                });
 
-📝 *Observações:*
-${data.observations || 'Nenhuma observação especial'}
+                // Info modal
+                document.getElementById('info-btn').addEventListener('click', () => {
+                    document.getElementById('info-modal').classList.add('active');
+                });
+                document.getElementById('info-close').addEventListener('click', () => {
+                    document.getElementById('info-modal').classList.remove('active');
+                });
 
-Aguardo confirmação do agendamento! 💈`;
+                // Start conversation
+                setTimeout(() => this.startConversation(), 500);
+            }
 
-                // Encode message for WhatsApp URL
+            startConversation() {
+                this.addBotMessage('Olá! Bem-vindo à Mondadori Barbershop! 👋');
+                setTimeout(() => {
+                    this.addBotMessage('Eu sou o assistente virtual do Diego e vou te ajudar a agendar seu horário.');
+                    setTimeout(() => {
+                        this.addBotMessage('Como posso te chamar?');
+                        this.showInput();
+                    }, 1500);
+                }, 1000);
+            }
+
+            addBotMessage(text, delay = 0) {
+                setTimeout(() => {
+                    this.showTypingIndicator();
+                    setTimeout(() => {
+                        this.hideTypingIndicator();
+                        const messageDiv = document.createElement('div');
+                        messageDiv.className = 'message bot';
+                        messageDiv.innerHTML = `
+                            <div class="message-content">${text}</div>
+                        `;
+                        this.messagesArea.appendChild(messageDiv);
+                        this.scrollToBottom();
+                    }, 1000);
+                }, delay);
+            }
+
+            addUserMessage(text) {
+                const messageDiv = document.createElement('div');
+                messageDiv.className = 'message user';
+                messageDiv.innerHTML = `
+                    <div class="message-content">${text}</div>
+                `;
+                this.messagesArea.appendChild(messageDiv);
+                this.scrollToBottom();
+            }
+
+            showTypingIndicator() {
+                const indicator = document.createElement('div');
+                indicator.className = 'typing-indicator active';
+                indicator.id = 'typing';
+                indicator.innerHTML = `
+                    <div class="typing-dot"></div>
+                    <div class="typing-dot"></div>
+                    <div class="typing-dot"></div>
+                `;
+                this.messagesArea.appendChild(indicator);
+                this.scrollToBottom();
+            }
+
+            hideTypingIndicator() {
+                const indicator = document.getElementById('typing');
+                if (indicator) indicator.remove();
+            }
+
+            showInput() {
+                this.inputArea.classList.add('active');
+                this.userInput.focus();
+            }
+
+            hideInput() {
+                this.inputArea.classList.remove('active');
+            }
+
+            handleUserInput() {
+                const value = this.userInput.value.trim();
+                if (!value) return;
+
+                this.addUserMessage(value);
+                this.userInput.value = '';
+
+                switch(this.currentStep) {
+                    case 0: // Name
+                        this.bookingData.name = value;
+                        this.hideInput();
+                        this.showServiceSelection();
+                        break;
+                    case 4: // Phone
+                        if (this.validatePhone(value)) {
+                            this.bookingData.phone = value;
+                            this.hideInput();
+                            this.showConfirmation();
+                        } else {
+                            this.addBotMessage('Por favor, digite um telefone válido no formato: (XX) XXXXX-XXXX');
+                        }
+                        break;
+                }
+            }
+
+            showServiceSelection() {
+                this.currentStep = 1;
+                this.addBotMessage(`Prazer, ${this.bookingData.name}! Qual serviço você gostaria de agendar hoje?`);
+
+                setTimeout(() => {
+                    const servicesHTML = `
+                        <div class="service-options">
+                            ${this.services.map(service => `
+                                <div class="service-card" onclick="chatBot.selectService('${service.name}', ${service.price})">
+                                    <div class="service-name">${service.name}</div>
+                                    <div class="service-price">R$ ${service.price}</div>
+                                </div>
+                            `).join('')}
+                        </div>
+                    `;
+
+                    const messageDiv = document.createElement('div');
+                    messageDiv.className = 'message bot';
+                    messageDiv.innerHTML = `<div class="message-content">${servicesHTML}</div>`;
+                    this.messagesArea.appendChild(messageDiv);
+                    this.scrollToBottom();
+                }, 1500);
+            }
+
+            selectService(name, price) {
+                this.currentStep = 2;
+                this.bookingData.service = name;
+                this.bookingData.servicePrice = price;
+
+                this.addUserMessage(`${name} - R$ ${price}`);
+                this.addBotMessage(`Ótima escolha! ${name} - R$ ${price}`);
+
+                setTimeout(() => {
+                    this.addBotMessage('Qual dia você prefere?');
+                    setTimeout(() => this.showCalendar(), 1500);
+                }, 1000);
+            }
+
+            showCalendar() {
+                const now = new Date();
+                const currentMonth = now.getMonth();
+                const currentYear = now.getFullYear();
+
+                const calendarHTML = this.generateCalendar(currentYear, currentMonth);
+
+                const messageDiv = document.createElement('div');
+                messageDiv.className = 'message bot';
+                messageDiv.innerHTML = `<div class="message-content">${calendarHTML}</div>`;
+                this.messagesArea.appendChild(messageDiv);
+                this.scrollToBottom();
+            }
+
+            generateCalendar(year, month) {
+                const firstDay = new Date(year, month, 1).getDay();
+                const daysInMonth = new Date(year, month + 1, 0).getDate();
+                const monthNames = ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho',
+                                   'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'];
+
+                let html = `
+                    <div class="calendar-widget">
+                        <div class="calendar-header">
+                            <div>${monthNames[month]} ${year}</div>
+                        </div>
+                        <div class="calendar-days">
+                            <div class="calendar-day-label">Dom</div>
+                            <div class="calendar-day-label">Seg</div>
+                            <div class="calendar-day-label">Ter</div>
+                            <div class="calendar-day-label">Qua</div>
+                            <div class="calendar-day-label">Qui</div>
+                            <div class="calendar-day-label">Sex</div>
+                            <div class="calendar-day-label">Sáb</div>
+                `;
+
+                // Empty cells before first day
+                for (let i = 0; i < firstDay; i++) {
+                    html += `<div class="calendar-day empty"></div>`;
+                }
+
+                // Days of month
+                const today = new Date();
+                today.setHours(0, 0, 0, 0);
+
+                for (let day = 1; day <= daysInMonth; day++) {
+                    const date = new Date(year, month, day);
+                    const dayOfWeek = date.getDay();
+                    const isPast = date < today;
+                    const isClosed = dayOfWeek === 0 || dayOfWeek === 1; // Sunday or Monday
+                    const isDisabled = isPast || isClosed;
+
+                    const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+
+                    html += `
+                        <div class="calendar-day ${isDisabled ? 'disabled' : ''}"
+                             ${!isDisabled ? `onclick="chatBot.selectDate('${dateStr}')"` : ''}>
+                            ${day}
+                        </div>
+                    `;
+                }
+
+                html += `</div></div>`;
+                return html;
+            }
+
+            selectDate(dateStr) {
+                this.currentStep = 3;
+                this.bookingData.date = dateStr;
+
+                const date = new Date(dateStr + 'T00:00:00');
+                const formatted = date.toLocaleDateString('pt-BR', {
+                    weekday: 'long',
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric'
+                });
+
+                this.addUserMessage(formatted);
+                this.addBotMessage('Perfeito! Agora escolha o melhor horário:');
+
+                setTimeout(() => this.showTimeSlots(), 1500);
+            }
+
+            showTimeSlots() {
+                const times = [];
+                for (let hour = 10; hour < 20; hour++) {
+                    times.push(`${String(hour).padStart(2, '0')}:00`);
+                    times.push(`${String(hour).padStart(2, '0')}:30`);
+                }
+
+                const slotsHTML = `
+                    <div class="time-slots">
+                        ${times.map(time => `
+                            <div class="time-slot" onclick="chatBot.selectTime('${time}')">
+                                ${time}
+                            </div>
+                        `).join('')}
+                    </div>
+                `;
+
+                const messageDiv = document.createElement('div');
+                messageDiv.className = 'message bot';
+                messageDiv.innerHTML = `<div class="message-content">${slotsHTML}</div>`;
+                this.messagesArea.appendChild(messageDiv);
+                this.scrollToBottom();
+            }
+
+            selectTime(time) {
+                this.currentStep = 4;
+                this.bookingData.time = time;
+
+                this.addUserMessage(time);
+                this.addBotMessage('Quase lá! Preciso do seu telefone para confirmar:');
+                this.addBotMessage('Digite no formato: (XX) XXXXX-XXXX');
+
+                setTimeout(() => {
+                    this.showInput();
+                    this.userInput.placeholder = '(41) 98765-4321';
+                }, 2000);
+            }
+
+            validatePhone(phone) {
+                const cleaned = phone.replace(/\D/g, '');
+                return cleaned.length === 10 || cleaned.length === 11;
+            }
+
+            showConfirmation() {
+                this.currentStep = 5;
+
+                this.addBotMessage('Vamos confirmar seus dados:');
+
+                const date = new Date(this.bookingData.date + 'T00:00:00');
+                const formattedDate = date.toLocaleDateString('pt-BR', {
+                    weekday: 'long',
+                    day: '2-digit',
+                    month: 'long',
+                    year: 'numeric'
+                });
+
+                setTimeout(() => {
+                    const confirmHTML = `
+                        <div class="confirmation-card">
+                            <div class="confirmation-item">
+                                <span class="confirmation-label">👤 Nome:</span>
+                                <span class="confirmation-value">${this.bookingData.name}</span>
+                            </div>
+                            <div class="confirmation-item">
+                                <span class="confirmation-label">✂️ Serviço:</span>
+                                <span class="confirmation-value">${this.bookingData.service}</span>
+                            </div>
+                            <div class="confirmation-item">
+                                <span class="confirmation-label">💰 Valor:</span>
+                                <span class="confirmation-value">R$ ${this.bookingData.servicePrice}</span>
+                            </div>
+                            <div class="confirmation-item">
+                                <span class="confirmation-label">📅 Data:</span>
+                                <span class="confirmation-value">${formattedDate}</span>
+                            </div>
+                            <div class="confirmation-item">
+                                <span class="confirmation-label">⏰ Horário:</span>
+                                <span class="confirmation-value">${this.bookingData.time}</span>
+                            </div>
+                            <div class="confirmation-item">
+                                <span class="confirmation-label">📞 Telefone:</span>
+                                <span class="confirmation-value">${this.bookingData.phone}</span>
+                            </div>
+                        </div>
+                        <div class="action-buttons">
+                            <button class="action-button" onclick="chatBot.restart()">
+                                ❌ Alterar
+                            </button>
+                            <button class="action-button primary" onclick="chatBot.confirmBooking()">
+                                ✅ Confirmar
+                            </button>
+                        </div>
+                    `;
+
+                    const messageDiv = document.createElement('div');
+                    messageDiv.className = 'message bot';
+                    messageDiv.innerHTML = `<div class="message-content">${confirmHTML}</div>`;
+                    this.messagesArea.appendChild(messageDiv);
+                    this.scrollToBottom();
+                }, 1500);
+            }
+
+            confirmBooking() {
+                this.currentStep = 6;
+                this.addUserMessage('✅ Confirmar agendamento');
+
+                this.addBotMessage('Agendamento confirmado! 🎉');
+
+                setTimeout(() => {
+                    this.addBotMessage('Vou te redirecionar para o WhatsApp do Diego para confirmação final.');
+
+                    setTimeout(() => {
+                        this.sendToWhatsApp();
+                    }, 2000);
+                }, 1000);
+            }
+
+            sendToWhatsApp() {
+                const date = new Date(this.bookingData.date + 'T00:00:00');
+                const formattedDate = date.toLocaleDateString('pt-BR', {
+                    weekday: 'long',
+                    day: '2-digit',
+                    month: 'long',
+                    year: 'numeric'
+                });
+
+                const message = `🔥 *AGENDAMENTO - MONDADORI BARBERSHOP* 🔥
+
+👤 *Nome:* ${this.bookingData.name}
+📞 *Telefone:* ${this.bookingData.phone}
+📅 *Data:* ${formattedDate}
+⏰ *Horário:* ${this.bookingData.time}
+✂️ *Serviço:* ${this.bookingData.service}
+💰 *Valor:* R$ ${this.bookingData.servicePrice}
+
+Aguardo confirmação! ✨`;
+
                 const encodedMessage = encodeURIComponent(message);
                 const whatsappURL = `https://wa.me/5541984325356?text=${encodedMessage}`;
-                
-                // Open WhatsApp
-                window.open(whatsappURL, '_blank');
-                
+
                 // Show success message
-                showSuccessModal();
-                
-                // Reset form after a short delay
-                setTimeout(() => {
-                    form.reset();
-                }, 1000);
-            });
-        }
-
-        function extractPriceFromService(serviceString) {
-            const priceMatch = serviceString.match(/R\$\s*(\d+(?:,\d{2})?)/); 
-            if (priceMatch) {
-                return parseFloat(priceMatch[1].replace(',', '.'));
-            }
-            return 0;
-        }
-
-        function saveAppointmentToStorage(appointmentData) {
-            try {
-                const appointments = JSON.parse(localStorage.getItem('barbershopAppointments') || '[]');
-                appointments.push(appointmentData);
-                localStorage.setItem('barbershopAppointments', JSON.stringify(appointments));
-                console.log('Appointment saved to storage:', appointmentData);
-            } catch (error) {
-                console.error('Error saving appointment:', error);
-            }
-        }
-
-        function showSuccessModal() {
-            // Remove existing modal if any
-            const existingModal = document.getElementById('successModal');
-            if (existingModal) {
-                existingModal.remove();
-            }
-            
-            // Create success modal
-            const modalHTML = `
-                <div id="successModal" style="
-                    position: fixed;
-                    top: 0;
-                    left: 0;
-                    width: 100%;
-                    height: 100%;
-                    background: rgba(0,0,0,0.9);
-                    display: flex;
-                    justify-content: center;
-                    align-items: center;
-                    z-index: 9999;
-                    animation: fadeIn 0.3s ease;
-                ">
-                    <div style="
-                        background: linear-gradient(145deg, #1a1a1a, #2a2a2a);
-                        padding: 2.5rem;
-                        border-radius: 20px;
-                        border: 3px solid #A88848;
-                        text-align: center;
-                        color: white;
-                        max-width: 450px;
-                        width: 90%;
-                        box-shadow: 0 20px 60px rgba(168, 136, 72, 0.3);
-                    ">
-                        <div style="
-                            font-size: 3rem;
-                            margin-bottom: 1rem;
-                        ">✅</div>
-                        
-                        <h2 style="
-                            color: #A88848;
-                            margin-bottom: 1rem;
-                            font-size: 1.5rem;
-                        ">
-                            Agendamento Enviado!
-                        </h2>
-                        
-                        <p style="
-                            margin-bottom: 1.5rem;
-                            line-height: 1.6;
-                            font-size: 1rem;
-                        ">
-                            Seu agendamento foi enviado via WhatsApp para o Diego.<br>
-                            Aguarde a confirmação do seu horário!
+                const successHTML = `
+                    <div style="text-align: center; padding: 2rem 0;">
+                        <div class="success-icon">✅</div>
+                        <p style="margin-top: 1rem; font-size: 1.1rem;">
+                            Redirecionando para o WhatsApp...
                         </p>
-                        
-                        <div style="
-                            background: rgba(168, 136, 72, 0.1);
-                            padding: 1rem;
-                            border-radius: 10px;
-                            margin-bottom: 1.5rem;
-                            border-left: 4px solid #A88848;
-                        ">
-                            <p style="
-                                margin: 0;
-                                font-size: 0.9rem;
-                                color: #ccc;
-                            ">
-                                📱 Se o WhatsApp não abrir automaticamente,<br>
-                                entre em contato: <strong style="color: #A88848;">(41) 98432-5356</strong>
-                            </p>
-                        </div>
-                        
-                        <button onclick="closeSuccessModal()" style="
-                            background: linear-gradient(45deg, #A88848, #A88848);
-                            border: none;
-                            padding: 1rem 2rem;
-                            border-radius: 10px;
-                            color: #000;
-                            font-weight: bold;
-                            cursor: pointer;
-                            font-size: 1rem;
-                            transition: all 0.3s ease;
-                        " onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform='none'">
-                            Entendi!
-                        </button>
                     </div>
-                </div>
-            `;
-            
-            document.body.insertAdjacentHTML('beforeend', modalHTML);
-            
-            // Auto close after 8 seconds
-            setTimeout(closeSuccessModal, 8000);
-        }
+                `;
 
-        function closeSuccessModal() {
-            const modal = document.getElementById('successModal');
-            if (modal) {
-                modal.style.animation = 'fadeOut 0.3s ease';
-                setTimeout(() => modal.remove(), 300);
+                const messageDiv = document.createElement('div');
+                messageDiv.className = 'message bot';
+                messageDiv.innerHTML = `<div class="message-content">${successHTML}</div>`;
+                this.messagesArea.appendChild(messageDiv);
+                this.scrollToBottom();
+
+                // Save to localStorage
+                this.saveBooking();
+
+                // Redirect to WhatsApp
+                setTimeout(() => {
+                    window.open(whatsappURL, '_blank');
+                }, 1500);
+            }
+
+            saveBooking() {
+                try {
+                    const bookings = JSON.parse(localStorage.getItem('mondadoriBookings') || '[]');
+                    bookings.push({
+                        ...this.bookingData,
+                        timestamp: new Date().toISOString(),
+                        status: 'pending'
+                    });
+                    localStorage.setItem('mondadoriBookings', JSON.stringify(bookings));
+                } catch (error) {
+                    console.error('Error saving booking:', error);
+                }
+            }
+
+            restart() {
+                this.currentStep = 0;
+                this.bookingData = {
+                    name: '',
+                    service: '',
+                    servicePrice: '',
+                    date: '',
+                    time: '',
+                    phone: ''
+                };
+
+                this.addUserMessage('❌ Vou alterar os dados');
+                this.addBotMessage('Sem problemas! Vamos começar novamente. 😊');
+
+                setTimeout(() => {
+                    this.addBotMessage('Como posso te chamar?');
+                    this.showInput();
+                    this.userInput.placeholder = 'Digite sua resposta...';
+                }, 1500);
+            }
+
+            scrollToBottom() {
+                setTimeout(() => {
+                    this.messagesArea.scrollTop = this.messagesArea.scrollHeight;
+                }, 100);
             }
         }
 
-        // Add fade animations to CSS
-        const style = document.createElement('style');
-        style.textContent = `
-            @keyframes fadeIn {
-                from { opacity: 0; }
-                to { opacity: 1; }
-            }
-            @keyframes fadeOut {
-                from { opacity: 1; }
-                to { opacity: 0; }
-            }
-        `;
-        document.head.appendChild(style);
-
-
-        // Smooth scrolling
-        function setupSmoothScrolling() {
-            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-                anchor.addEventListener('click', function (e) {
-                    e.preventDefault();
-                    const target = document.querySelector(this.getAttribute('href'));
-                    if (target) {
-                        target.scrollIntoView({
-                            behavior: 'smooth',
-                            block: 'start'
-                        });
-                    }
-                });
-            });
-        }
-
-        // Initialize everything when DOM is loaded
-        document.addEventListener('DOMContentLoaded', function() {
-            initializeTimeSlots();
-            setupDateValidation();
-            setupPhoneMask();
-            setupFormSubmission();
-            setupSmoothScrolling();
+        // Initialize chatbot
+        let chatBot;
+        window.addEventListener('DOMContentLoaded', () => {
+            chatBot = new MondadoriChatBot();
         });
-
-
-
-        // Add scroll animations
-        function setupScrollAnimations() {
-            const observerOptions = {
-                threshold: 0.1,
-                rootMargin: '0px 0px -50px 0px'
-            };
-
-            const observer = new IntersectionObserver((entries) => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        entry.target.style.opacity = '1';
-                        entry.target.style.transform = 'translateY(0)';
-                    }
-                });
-            }, observerOptions);
-
-            // Observe service cards and package cards
-            document.querySelectorAll('.service-card, .package-card').forEach(card => {
-                card.style.opacity = '0';
-                card.style.transform = 'translateY(30px)';
-                card.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
-                observer.observe(card);
-            });
-        }
-
-        // Setup scroll animations after DOM is loaded
-        document.addEventListener('DOMContentLoaded', setupScrollAnimations);
     </script>
-<script>
-// Force populate time slots - backup method to ensure they're always available
-window.addEventListener('load', function() {
-    setTimeout(function() {
-        const timeSelect = document.getElementById('time');
-        if (timeSelect && timeSelect.options.length <= 1) {
-            console.log('Backup: Adding time slots...');
-            
-            const times = [
-                '10:00', '10:30', '11:00', '11:30', 
-                '12:00', '12:30', '13:00', '13:30',
-                '14:00', '14:30', '15:00', '15:30',
-                '16:00', '16:30', '17:00', '17:30',
-                '18:00', '18:30', '19:00', '19:30'
-            ];
-            
-            times.forEach(function(time) {
-                const option = document.createElement('option');
-                option.value = time;
-                option.textContent = time;
-                timeSelect.appendChild(option);
-            });
-            
-            console.log('Backup time slots added:', times.length);
-        } else if (timeSelect) {
-            console.log('Time slots already available:', timeSelect.options.length - 1);
-        }
-    }, 1000);
-    
-});
-</script>
 </body>
 </html>
